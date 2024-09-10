@@ -43,6 +43,7 @@ local Macro =
 {
     Last_Unit = nil,
     Playing = nil,
+    Connection = nil,
     Value = {},
     Count = {
         __len = function(num)
@@ -469,7 +470,7 @@ task.spawn(
                 )
             end
         )
-        workspace.UnitVisuals.UnitCircles.ChildAdded:Connect(function (v)
+        Macro.Connection = workspace.UnitVisuals.UnitCircles.ChildAdded:Connect(function (v)
             if Loader.Unloaded or not Options["Record Macro"].Value then
                 return
             end
@@ -497,7 +498,7 @@ task.spawn(
     function()
         if game.PlaceId == 16146832113 then return end
         while true and wait() do
-            if Loader.Unloaded then break end
+            if Loader.Unloaded then Macro.Connection:Disconnect() break end
             if #workspace.Camera:GetChildren() > 0 then
                 game:GetService("VirtualInputManager"):SendMouseButtonEvent(5, 5, 0, not game:GetService("UserInputService"):IsMouseButtonPressed(Enum.UserInputType.MouseButton1), game, 0)
             end
@@ -509,16 +510,17 @@ task.spawn(
     function()
         if game.PlaceId == 16146832113 then return end
         while true and wait() do
+            if Loader.Unloaded then break end
             if Options["Auto Leave"].Value and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen:FindFirstChild("Leave") and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Leave.Visible then
                 repeat
                     NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Leave.Button)
                     wait(0.25)
-                until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible
+                until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
             elseif Options["Auto Next"].Value and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen:FindFirstChild("Next") and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Next.Visible then
                 repeat
                     NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Next.Button)
                     wait(0.25)
-                until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible
+                until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
                 if Options["Play Macro"].Value then
                     Options["Play Macro"].Value = false
                     task.wait(0.075)
@@ -528,7 +530,7 @@ task.spawn(
                 repeat
                     NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Retry.Button)
                     wait(0.25)
-                until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible
+                until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
                 if Options["Play Macro"].Value then
                     Options["Play Macro"].Value = false
                     task.wait(0.075)
