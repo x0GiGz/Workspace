@@ -470,18 +470,20 @@ task.spawn(
                                     end
                                 elseif Data["type"] == "Upgrade" then
                                     if not upgradepos(Data["cframe"]) then
-                                        return warn("Error: Can't find the unit to upgrade!")
+                                        warn("Error: Can't find the unit to upgrade!")
                                     elseif not Options["Play Macro"].Value then
                                         break
+                                    else
+                                        game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Upgrade", upgradepos(Data["cframe"]))
                                     end
-                                    game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Upgrade", upgradepos(Data["cframe"]))
                                 elseif Data["type"] == "Sell" then
                                     if not upgradepos(Data["cframe"]) then
-                                        return warn("Error: Can't find the unit to sell!")
+                                        warn("Error: Can't find the unit to sell!")
                                     elseif not Options["Play Macro"].Value then
                                         break
+                                    else
+                                        game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Sell", upgradepos(Data["cframe"]))
                                     end
-                                    game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Sell", upgradepos(Data["cframe"]))
                                 end
                                 wait(0.275)
                                 if not Options["Play Macro"].Value then
@@ -547,8 +549,9 @@ task.spawn(
                             NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Next.Button)
                             warn("Nexting . . .")
                             wait(0.25)
-                        until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
+                        until not Options["Auto Next"].Value or Game.Reward_Claim or not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
                         if Options["Play Macro"].Value then
+                            warn("Replay Macro")
                             Options["Play Macro"].Value = false
                             task.wait(0.075)
                             Options["Play Macro"]:SetValue(true)
@@ -558,8 +561,9 @@ task.spawn(
                             NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Retry.Button)
                             warn("Retrying . . .")
                             wait(0.25)
-                        until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
+                        until not Options["Auto Retry"].Value or Game.Reward_Claim or not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
                         if Options["Play Macro"].Value then
+                            warn("Replay Macro")
                             Options["Play Macro"].Value = false
                             task.wait(0.075)
                             Options["Play Macro"]:SetValue(true)
