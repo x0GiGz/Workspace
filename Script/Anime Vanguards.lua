@@ -368,10 +368,10 @@ local function NavigationGUISelect(Object)
     local GuiService = game:GetService("GuiService")
     GuiService.GuiNavigationEnabled = true
     GuiService.SelectedObject = Object
-    task.wait(0.025)
+    task.wait(0.075)
     game:GetService("VirtualInputManager"):SendKeyEvent(true, "Return", false, nil)
     game:GetService("VirtualInputManager"):SendKeyEvent(false, "Return", false, nil)
-    task.wait(0.025)
+    task.wait(0.075)
     GuiService.GuiNavigationEnabled = false
     GuiService.SelectedObject = nil
 end
@@ -564,7 +564,7 @@ task.spawn(
         while true and wait() do
             if Loader.Unloaded then break end
             if Options["Auto Start Game / Skip Wave"].Value and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("SkipWave") then
-                NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.SkipWave.Holder.Yes.Button)
+                game:GetService("ReplicatedStorage").Networking.SkipWaveEvent:FireServer("Skip")
             end
         end
     end
