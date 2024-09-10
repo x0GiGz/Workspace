@@ -549,7 +549,7 @@ task.spawn(
                             NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Next.Button)
                             warn("Nexting . . .")
                             wait(0.25)
-                        until not Options["Auto Next"].Value or Game.Reward_Claim or not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
+                        until not Options["Auto Next"].Value or Game.Reward_Claim or not EndFrame.Enabled or not EndFrame.Background.Visible or not EndFrame.ShowEndScreen.Visible or Loader.Unloaded
                         if Options["Play Macro"].Value then
                             warn("Replay Macro")
                             Options["Play Macro"].Value = false
@@ -561,7 +561,7 @@ task.spawn(
                             NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Retry.Button)
                             warn("Retrying . . .")
                             wait(0.25)
-                        until not Options["Auto Retry"].Value or Game.Reward_Claim or not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
+                        until not Options["Auto Retry"].Value or Game.Reward_Claim or not EndFrame.Enabled or not EndFrame.Background.Visible or not EndFrame.ShowEndScreen.Visible or Loader.Unloaded
                         if Options["Play Macro"].Value then
                             warn("Replay Macro")
                             Options["Play Macro"].Value = false
