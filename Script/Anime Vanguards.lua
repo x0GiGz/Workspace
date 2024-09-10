@@ -407,7 +407,7 @@ task.spawn(
                                     writemacro()
                                 end
                             )
-                        elseif arg[1] == "Sell" then
+                        elseif arg[1] == "Sell" and #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
                             macroinsert(
                                 {
                                     ["type"] = "Sell",
@@ -416,6 +416,7 @@ task.spawn(
                                     ["cframe"] = tostring(upgradecf(arg[2]))
                                 }
                             )
+                            writemacro()
                         end
                     end
                 end
@@ -557,3 +558,4 @@ task.spawn(
         end
     end
 )
+
