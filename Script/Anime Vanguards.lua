@@ -457,8 +457,8 @@ task.spawn(
                             Macro.Playing = game:GetService("HttpService"):JSONDecode(readfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Options["Selected File [Main]"].Value)))
                             setmetatable(Macro.Playing, Macro.Count)
                             for i = 1 , #Macro.Playing do
-                                local Data = Macro.Playing[tostring(i)]
                                 wait(Options["Macro Delay"].Value)
+                                local Data = Macro.Playing[tostring(i)]
                                 if Data["money"] then
                                     repeat wait() until Money() >= tonumber(Data["money"]) or not Options["Play Macro"].Value
                                 elseif not Options["Play Macro"].Value then
