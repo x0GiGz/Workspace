@@ -1896,12 +1896,10 @@ local aa = {
                 "Frame",
                 {
                     Parent = t.Parent,
-                    AnchorPoint = Vector2.new(1, 1),
                     BackgroundColor3 = Color3.fromRGB(0, 0, 0),
                     BorderSizePixel = 0,
                     ZIndex = 10,
-                    Position = UDim2.new(1.00222063, 0, 1.01891279, 0),
-                    Size = UDim2.new(10, 0, 10, 0),
+                    Size = UDim2.new(1, 0, 1, 0),
                     Visible = false
                 }
             )
