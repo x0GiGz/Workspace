@@ -375,7 +375,7 @@ task.spawn(
             task.spawn(
                 function()
                     if Loader.Unloaded then return
-                    elseif Options["Record Macro"].Value and self.Name == "UnitEvent" and (arg[1] == "Render" or arg[1] == "Upgrade") then
+                    elseif Options["Record Macro"].Value and self.Name == "UnitEvent" and (arg[1] == "Render" or arg[1] == "Upgrade" or arg[1] == "Sell") then
                         if arg[1] == "Render" and Money() >= UnitMoney(arg[2][1]) then
                             task.spawn(function()
                                 Macro.Last_Unit =
@@ -406,6 +406,15 @@ task.spawn(
                                     )
                                     writemacro()
                                 end
+                            )
+                        elseif arg[1] == "Sell" then
+                            macroinsert(
+                                {
+                                    ["type"] = "Sell",
+                                    ["money"] = "0",
+                                    ["unit"] = tostring(game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name),
+                                    ["cframe"] = tostring(upgradecf(arg[2]))
+                                }
                             )
                         end
                     end
@@ -455,11 +464,18 @@ task.spawn(
                                     end
                                 elseif Data["type"] == "Upgrade" then
                                     if not upgradepos(Data["cframe"]) then
-                                        return warn("Upgrade Error")
+                                        return warn("Error: Can't find the unit to upgrade!")
                                     elseif not Options["Play Macro"].Value then
                                         break
                                     end
                                     game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Upgrade", upgradepos(Data["cframe"]))
+                                elseif Data["type"] == "Sell" then
+                                    if not upgradepos(Data["cframe"]) then
+                                        return warn("Error: Can't find the unit to sell!")
+                                    elseif not Options["Play Macro"].Value then
+                                        break
+                                    end
+                                    game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Sell", upgradepos(Data["cframe"]))
                                 end
                                 wait(0.275)
                                 if not Options["Play Macro"].Value then
@@ -513,9 +529,9 @@ task.spawn(
         local EndFrame = game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("EndScreen")
         while true and wait() do
             if Loader.Unloaded then break end
-            if Options["Auto Leave"].Value and EndFrame.Enabled and EndFrame.Container.EndScreen:FindFirstChild("Leave") and EndFrame.Container.EndScreen:FindFirstChild("Leave").Visible then
+            if Options["Auto Leave"].Value and EndFrame.Enabled and EndFrame:WaitForChild("Background").Visible and EndFrame.Container.EndScreen:FindFirstChild("Leave") and EndFrame.Container.EndScreen:FindFirstChild("Leave").Visible then
                 NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Leave.Button)
-            elseif Options["Auto Next"].Value and EndFrame.Enabled and EndFrame.Container.EndScreen:FindFirstChild("Next") and EndFrame.Container.EndScreen:FindFirstChild("Next").Visible then
+            elseif Options["Auto Next"].Value and EndFrame.Enabled and EndFrame:WaitForChild("Background").Visible and EndFrame.Container.EndScreen:FindFirstChild("Next") and EndFrame.Container.EndScreen:FindFirstChild("Next").Visible then
                 repeat
                     NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Next.Button)
                     warn("Nexting . . .")
@@ -526,7 +542,7 @@ task.spawn(
                     task.wait(0.075)
                     Options["Play Macro"]:SetValue(true)
                 end
-            elseif Options["Auto Retry"].Value and EndFrame.Enabled and EndFrame.Container.EndScreen:FindFirstChild("Retry") and EndFrame.Container.EndScreen:FindFirstChild("Retry").Visible then
+            elseif Options["Auto Retry"].Value and EndFrame.Enabled and EndFrame:WaitForChild("Background").Visible and EndFrame.Container.EndScreen:FindFirstChild("Retry") and EndFrame.Container.EndScreen:FindFirstChild("Retry").Visible then
                 repeat
                     NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Retry.Button)
                     warn("Retrying . . .")
