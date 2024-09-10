@@ -458,12 +458,12 @@ task.spawn(
                             setmetatable(Macro.Playing, Macro.Count)
                             for i = 1 , #Macro.Playing do
                                 local Data = Macro.Playing[tostring(i)]
+                                wait(Options["Macro Delay"].Value)
                                 if Data["money"] then
                                     repeat wait() until Money() >= tonumber(Data["money"]) or not Options["Play Macro"].Value
                                 elseif not Options["Play Macro"].Value then
                                     break
                                 end
-                                wait(Options["Macro Delay"].Value)
                                 if Data["type"] == "Render" then
                                     if not Options["Play Macro"].Value then
                                         break
@@ -502,7 +502,7 @@ task.spawn(
                                         game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Sell", upgradepos(Data["cframe"]))
                                     end
                                 end
-                                wait(0.275)
+                                wait(0.375)
                                 if not Options["Play Macro"].Value then
                                     break
                                 end
