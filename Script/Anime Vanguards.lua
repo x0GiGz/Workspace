@@ -460,14 +460,15 @@ task.spawn(
                                 wait(Options["Macro Delay"].Value)
                                 local Data = Macro.Playing[tostring(i)]
                                 if Data["money"] then
-                                    repeat wait() until Money() >= tonumber(Data["money"]) or not Options["Play Macro"].Value
-                                elseif not Options["Play Macro"].Value then
+                                    repeat wait() until Money() >= tonumber(Data["money"]) or not Options["Play Macro"].Value or Loader.Unloaded
+                                elseif not Options["Play Macro"].Value or Loader.Unloaded then
                                     break
                                 end
                                 if Data["type"] == "Render" then
-                                    if not Options["Play Macro"].Value then
+                                    if not Options["Play Macro"].Value or Loader.Unloaded then
                                         break
                                     else
+                                        repeat wait() until Money() >= tonumber(Data["money"])
                                         local to_idx = Data["idx"]
                                         if to_idx:find("Evolved") then
                                             to_idx = to_idx
@@ -488,22 +489,24 @@ task.spawn(
                                 elseif Data["type"] == "Upgrade" then
                                     if not upgradepos(Data["cframe"]) then
                                         warn("Error: Can't find the unit to upgrade!")
-                                    elseif not Options["Play Macro"].Value then
+                                    elseif not Options["Play Macro"].Value or Loader.Unloaded then
                                         break
                                     else
+                                        repeat wait() until Money() >= tonumber(Data["money"])
                                         game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Upgrade", upgradepos(Data["cframe"]))
                                     end
                                 elseif Data["type"] == "Sell" then
                                     if not upgradepos(Data["cframe"]) then
                                         warn("Error: Can't find the unit to sell!")
-                                    elseif not Options["Play Macro"].Value then
+                                    elseif not Options["Play Macro"].Value or Loader.Unloaded then
                                         break
                                     else
+                                        repeat wait() until Money() >= tonumber(Data["money"])
                                         game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Sell", upgradepos(Data["cframe"]))
                                     end
                                 end
                                 wait(0.375)
-                                if not Options["Play Macro"].Value then
+                                if not Options["Play Macro"].Value or Loader.Unloaded then
                                     break
                                 end
                             end
