@@ -513,9 +513,9 @@ task.spawn(
         local EndFrame = game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("EndScreen")
         while true and wait() do
             if Loader.Unloaded then break end
-            if Options["Auto Leave"].Value and EndFrame:WaitForChild("ShowEndScreen").Visible and EndFrame.Container.EndScreen:FindFirstChild("Leave") and EndFrame.Container.EndScreen:FindFirstChild("Leave").Visible then
+            if Options["Auto Leave"].Value and EndFrame.Enabled and EndFrame.Container.EndScreen:FindFirstChild("Leave") and EndFrame.Container.EndScreen:FindFirstChild("Leave").Visible then
                 NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Leave.Button)
-            elseif Options["Auto Next"].Value and EndFrame:WaitForChild("ShowEndScreen").Visible and EndFrame.Container.EndScreen:FindFirstChild("Next") and EndFrame.Container.EndScreen:FindFirstChild("Next").Visible then
+            elseif Options["Auto Next"].Value and EndFrame.Enabled and EndFrame.Container.EndScreen:FindFirstChild("Next") and EndFrame.Container.EndScreen:FindFirstChild("Next").Visible then
                 repeat
                     NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Next.Button)
                     warn("Nexting . . .")
@@ -526,7 +526,7 @@ task.spawn(
                     task.wait(0.075)
                     Options["Play Macro"]:SetValue(true)
                 end
-            elseif Options["Auto Retry"].Value and EndFrame:WaitForChild("ShowEndScreen").Visible and EndFrame.Container.EndScreen:FindFirstChild("Retry") and EndFrame.Container.EndScreen:FindFirstChild("Retry").Visible then
+            elseif Options["Auto Retry"].Value and EndFrame.Enabled and EndFrame.Container.EndScreen:FindFirstChild("Retry") and EndFrame.Container.EndScreen:FindFirstChild("Retry").Visible then
                 repeat
                     NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Retry.Button)
                     warn("Retrying . . .")
