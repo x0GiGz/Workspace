@@ -530,32 +530,35 @@ task.spawn(
         local EndFrame = game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("EndScreen")
         while true and wait() do
             if Loader.Unloaded then break end
-            if Options["Auto Leave"].Value and EndFrame.Enabled and EndFrame:WaitForChild("Background").Visible and EndFrame.Container.EndScreen:FindFirstChild("Leave") and EndFrame.Container.EndScreen:FindFirstChild("Leave").Visible then
-                NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Leave.Button)
-            elseif Options["Auto Next"].Value and EndFrame.Enabled and EndFrame:WaitForChild("Background").Visible and EndFrame.Container.EndScreen:FindFirstChild("Next") and EndFrame.Container.EndScreen:FindFirstChild("Next").Visible then
-                repeat
-                    NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Next.Button)
-                    warn("Nexting . . .")
-                    wait(0.25)
-                until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
-                if Options["Play Macro"].Value then
-                    Options["Play Macro"].Value = false
-                    task.wait(0.075)
-                    Options["Play Macro"]:SetValue(true)
+            pcall(
+                function()
+                    if Options["Auto Leave"].Value and EndFrame.Enabled and EndFrame.Background.Visible and EndFrame.ShowEndScreen.Visible and EndFrame.Container.EndScreen:FindFirstChild("Leave") and EndFrame.Container.EndScreen:FindFirstChild("Leave").Visible then
+                        NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Leave.Button)
+                    elseif Options["Auto Next"].Value and EndFrame.Enabled and EndFrame.Background.Visible and EndFrame.ShowEndScreen.Visible and EndFrame.Container.EndScreen:FindFirstChild("Next") and EndFrame.Container.EndScreen:FindFirstChild("Next").Visible then
+                        repeat
+                            NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Next.Button)
+                            warn("Nexting . . .")
+                            wait(0.25)
+                        until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
+                        if Options["Play Macro"].Value then
+                            Options["Play Macro"].Value = false
+                            task.wait(0.075)
+                            Options["Play Macro"]:SetValue(true)
+                        end
+                    elseif Options["Auto Retry"].Value and EndFrame.Enabled and EndFrame.Background.Visible and EndFrame.ShowEndScreen.Visible and EndFrame.Container.EndScreen:FindFirstChild("Retry") and EndFrame.Container.EndScreen:FindFirstChild("Retry").Visible then
+                        repeat
+                            NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Retry.Button)
+                            warn("Retrying . . .")
+                            wait(0.25)
+                        until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
+                        if Options["Play Macro"].Value then
+                            Options["Play Macro"].Value = false
+                            task.wait(0.075)
+                            Options["Play Macro"]:SetValue(true)
+                        end
+                    end
                 end
-            elseif Options["Auto Retry"].Value and EndFrame.Enabled and EndFrame:WaitForChild("Background").Visible and EndFrame.Container.EndScreen:FindFirstChild("Retry") and EndFrame.Container.EndScreen:FindFirstChild("Retry").Visible then
-                repeat
-                    NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Retry.Button)
-                    warn("Retrying . . .")
-                    wait(0.25)
-                until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
-                if Options["Play Macro"].Value then
-                    Options["Play Macro"].Value = false
-                    task.wait(0.075)
-                    Options["Play Macro"]:SetValue(true)
-                end
-            end
+            )
         end
     end
 )
-
