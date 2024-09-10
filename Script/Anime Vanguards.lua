@@ -368,8 +368,10 @@ local function NavigationGUISelect(Object)
     local GuiService = game:GetService("GuiService")
     GuiService.GuiNavigationEnabled = true
     GuiService.SelectedObject = Object
+    task.wait(0.025)
     game:GetService("VirtualInputManager"):SendKeyEvent(true, "Return", false, nil)
     game:GetService("VirtualInputManager"):SendKeyEvent(false, "Return", false, nil)
+    task.wait(0.025)
     GuiService.GuiNavigationEnabled = false
     GuiService.SelectedObject = nil
 end
