@@ -427,6 +427,7 @@ task.spawn(
                     function(v)
                         if v then
                             wait(1)
+                            repeat wait() until game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("Hotbar")
                             Macro.Playing = game:GetService("HttpService"):JSONDecode(readfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Options["Selected File [Main]"].Value)))
                             setmetatable(Macro.Playing, Macro.Count)
                             for i = 1 , #Macro.Playing do
@@ -509,16 +510,15 @@ task.spawn(
 task.spawn(
     function()
         if game.PlaceId == 16146832113 then return end
+        local EndFrame = game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("EndScreen")
         while true and wait() do
             if Loader.Unloaded then break end
-            if Options["Auto Leave"].Value and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen:FindFirstChild("Leave") and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Leave.Visible then
-                repeat
-                    NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Leave.Button)
-                    wait(0.25)
-                until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
-            elseif Options["Auto Next"].Value and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen:FindFirstChild("Next") and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Next.Visible then
+            if Options["Auto Leave"].Value and EndFrame:WaitForChild("ShowEndScreen").Visible and EndFrame.Container.EndScreen:FindFirstChild("Leave") and EndFrame.Container.EndScreen:FindFirstChild("Leave").Visible then
+                NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Leave.Button)
+            elseif Options["Auto Next"].Value and EndFrame:WaitForChild("ShowEndScreen").Visible and EndFrame.Container.EndScreen:FindFirstChild("Next") and EndFrame.Container.EndScreen:FindFirstChild("Next").Visible then
                 repeat
                     NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Next.Button)
+                    warn("Nexting . . .")
                     wait(0.25)
                 until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
                 if Options["Play Macro"].Value then
@@ -526,9 +526,10 @@ task.spawn(
                     task.wait(0.075)
                     Options["Play Macro"]:SetValue(true)
                 end
-            elseif Options["Auto Retry"].Value and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen:FindFirstChild("Retry") and game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Retry.Visible then
+            elseif Options["Auto Retry"].Value and EndFrame:WaitForChild("ShowEndScreen").Visible and EndFrame.Container.EndScreen:FindFirstChild("Retry") and EndFrame.Container.EndScreen:FindFirstChild("Retry").Visible then
                 repeat
                     NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Retry.Button)
+                    warn("Retrying . . .")
                     wait(0.25)
                 until not game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.ShowEndScreen.Visible or Loader.Unloaded
                 if Options["Play Macro"].Value then
