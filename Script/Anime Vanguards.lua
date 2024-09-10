@@ -368,10 +368,11 @@ local function NavigationGUISelect(Object)
     local GuiService = game:GetService("GuiService")
     GuiService.GuiNavigationEnabled = true
     GuiService.SelectedObject = Object
-    task.wait(0.075)
     game:GetService("VirtualInputManager"):SendKeyEvent(true, "Return", false, nil)
     game:GetService("VirtualInputManager"):SendKeyEvent(false, "Return", false, nil)
-    task.wait(0.075)
+    task.wait(0.35)
+    game:GetService("VirtualInputManager"):SendKeyEvent(true, "Return", false, nil)
+    game:GetService("VirtualInputManager"):SendKeyEvent(false, "Return", false, nil)
     GuiService.GuiNavigationEnabled = false
     GuiService.SelectedObject = nil
 end
@@ -578,11 +579,11 @@ task.spawn(
             pcall(
                 function()
                     local End_Screen = game:GetService("Players").LocalPlayer.PlayerGui.EndScreen
-                    if Options["Auto Leave"].Value and not Game.Reward_Claim and End_Screen.Enabled and End_Screen.Background.Visible and End_Screen.ShowEndScreen.Visible and End_Screen.Container.EndScreen:FindFirstChild("Leave") and End_Screen.Container.EndScreen:FindFirstChild("Leave").Visible then
+                    if Options["Auto Leave"].Value and not Game.Reward_Claim and End_Screen.Enabled and End_Screen.ShowEndScreen.Visible and End_Screen.Container.EndScreen:FindFirstChild("Leave") and End_Screen.Container.EndScreen:FindFirstChild("Leave").Visible then
                         NavigationGUISelect(End_Screen.Container.EndScreen.Leave.Button)
-                    elseif Options["Auto Next"].Value and not Game.Reward_Claim and End_Screen.Enabled and End_Screen.Background.Visible and End_Screen.ShowEndScreen.Visible and End_Screen.Container.EndScreen:FindFirstChild("Next") and End_Screen.Container.EndScreen:FindFirstChild("Next").Visible then
+                    elseif Options["Auto Next"].Value and not Game.Reward_Claim and End_Screen.Enabled and End_Screen.ShowEndScreen.Visible and End_Screen.Container.EndScreen:FindFirstChild("Next") and End_Screen.Container.EndScreen:FindFirstChild("Next").Visible then
                         NavigationGUISelect(End_Screen.Container.EndScreen.Next.Button)
-                    elseif Options["Auto Retry"].Value and not Game.Reward_Claim and End_Screen.Enabled and End_Screen.Background.Visible and End_Screen.ShowEndScreen.Visible and End_Screen.Container.EndScreen:FindFirstChild("Retry") and End_Screen.Container.EndScreen:FindFirstChild("Retry").Visible then
+                    elseif Options["Auto Retry"].Value and not Game.Reward_Claim and End_Screen.Enabled and End_Screen.ShowEndScreen.Visible and End_Screen.Container.EndScreen:FindFirstChild("Retry") and End_Screen.Container.EndScreen:FindFirstChild("Retry").Visible then
                         NavigationGUISelect(End_Screen.Container.EndScreen.Retry.Button)
                     end
                 end
