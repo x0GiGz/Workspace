@@ -576,6 +576,7 @@ task.spawn(
             if Loader.Unloaded then break end
             if Options["Auto Start Game / Skip Wave"].Value and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("SkipWave") then
                 game:GetService("ReplicatedStorage").Networking.SkipWaveEvent:FireServer("Skip")
+                wait(2)
             end
         end
     end
