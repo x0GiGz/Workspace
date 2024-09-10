@@ -398,7 +398,7 @@ task.spawn(
                                 {
                                     ["money"] = tostring(UnitMoney(arg[2][1])),
                                     ["unit"] = tostring(arg[2][1]),
-                                    ["idx"] = arg[2][2],
+                                    ["idx"] = tostring(arg[2][2]),
                                     ["cframe"] = tostring(arg[2][3]),
                                     ["rotation"] = tostring(arg[2][4])
                                 }
@@ -472,7 +472,7 @@ task.spawn(
                                             [1] = "Render",
                                             [2] = {
                                                 [1] = Data["unit"],
-                                                [2] = Data["idx"],
+                                                [2] = (Data["idx"]:find("Evolved") and tostring(Data["idx"])) or tonumber(Data["idx"]),
                                                 [3] = stringtopos(Data["cframe"]),
                                                 [4] = tonumber(Data["rotation"])
                                             }
