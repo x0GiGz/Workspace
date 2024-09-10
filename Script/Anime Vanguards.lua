@@ -39,6 +39,11 @@ local Buttons =
     Delete = nil
 }
 
+local Game =
+{
+    Reward_Claim = false
+}
+
 local Macro =
 {
     Last_Unit = nil,
@@ -519,6 +524,9 @@ task.spawn(
             if Loader.Unloaded then Macro.Connection:Disconnect() break end
             if #workspace.Camera:GetChildren() > 0 then
                 game:GetService("VirtualInputManager"):SendMouseButtonEvent(5, 5, 0, not game:GetService("UserInputService"):IsMouseButtonPressed(Enum.UserInputType.MouseButton1), game, 0)
+                Game.Reward_Claim = true
+            else
+                Game.Reward_Claim = false
             end
         end
     end
@@ -532,9 +540,9 @@ task.spawn(
             if Loader.Unloaded then break end
             pcall(
                 function()
-                    if Options["Auto Leave"].Value and EndFrame.Enabled and EndFrame.Background.Visible and EndFrame.ShowEndScreen.Visible and EndFrame.Container.EndScreen:FindFirstChild("Leave") and EndFrame.Container.EndScreen:FindFirstChild("Leave").Visible then
+                    if not Game.Reward_Claim and Options["Auto Leave"].Value and EndFrame.Enabled and EndFrame.Background.Visible and EndFrame.ShowEndScreen.Visible and EndFrame.Container.EndScreen:FindFirstChild("Leave") and EndFrame.Container.EndScreen:FindFirstChild("Leave").Visible then
                         NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Leave.Button)
-                    elseif Options["Auto Next"].Value and EndFrame.Enabled and EndFrame.Background.Visible and EndFrame.ShowEndScreen.Visible and EndFrame.Container.EndScreen:FindFirstChild("Next") and EndFrame.Container.EndScreen:FindFirstChild("Next").Visible then
+                    elseif not Game.Reward_Claim and Options["Auto Next"].Value and EndFrame.Enabled and EndFrame.Background.Visible and EndFrame.ShowEndScreen.Visible and EndFrame.Container.EndScreen:FindFirstChild("Next") and EndFrame.Container.EndScreen:FindFirstChild("Next").Visible then
                         repeat
                             NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Next.Button)
                             warn("Nexting . . .")
@@ -545,7 +553,7 @@ task.spawn(
                             task.wait(0.075)
                             Options["Play Macro"]:SetValue(true)
                         end
-                    elseif Options["Auto Retry"].Value and EndFrame.Enabled and EndFrame.Background.Visible and EndFrame.ShowEndScreen.Visible and EndFrame.Container.EndScreen:FindFirstChild("Retry") and EndFrame.Container.EndScreen:FindFirstChild("Retry").Visible then
+                    elseif not Game.Reward_Claim and Options["Auto Retry"].Value and EndFrame.Enabled and EndFrame.Background.Visible and EndFrame.ShowEndScreen.Visible and EndFrame.Container.EndScreen:FindFirstChild("Retry") and EndFrame.Container.EndScreen:FindFirstChild("Retry").Visible then
                         repeat
                             NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.EndScreen.Container.EndScreen.Retry.Button)
                             warn("Retrying . . .")
