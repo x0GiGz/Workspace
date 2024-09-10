@@ -536,8 +536,17 @@ task.spawn(
         while true and wait() do
             if Loader.Unloaded then if Macro.Connection then Macro.Connection:Disconnect() end if Macro.Replay_Check then Macro.Replay_Check:Disconnect() end break end
             if #workspace.Camera:GetChildren() > 0 then
-                game:GetService("VirtualInputManager"):SendMouseButtonEvent(5, 5, 0, not game:GetService("UserInputService"):IsMouseButtonPressed(Enum.UserInputType.MouseButton1), game, 0)
-                Game.Reward_Claim = true
+                for _ , IsReward in next, workspace.Camera:GetChildren() do
+                    if IsReward:IsA("Model") and #workspace.Camera:GetChildren() > 1 then
+                        game:GetService("VirtualInputManager"):SendMouseButtonEvent(5, 5, 0, not game:GetService("UserInputService"):IsMouseButtonPressed(Enum.UserInputType.MouseButton1), game, 0)
+                        Game.Reward_Claim = true
+                    elseif not IsReward:IsA("Model") then
+                        game:GetService("VirtualInputManager"):SendMouseButtonEvent(5, 5, 0, not game:GetService("UserInputService"):IsMouseButtonPressed(Enum.UserInputType.MouseButton1), game, 0)
+                        Game.Reward_Claim = true
+                    else
+                        Game.Reward_Claim = false
+                    end
+                end
             else
                 Game.Reward_Claim = false
             end
