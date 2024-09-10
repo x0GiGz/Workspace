@@ -468,11 +468,17 @@ task.spawn(
                                     if not Options["Play Macro"].Value then
                                         break
                                     else
+                                        local to_idx = Data["idx"]
+                                        if to_idx:find("Evolved") then
+                                            to_idx = to_idx
+                                        else
+                                            to_idx = tonumber(to_idx)
+                                        end
                                         local args = {
                                             [1] = "Render",
                                             [2] = {
                                                 [1] = Data["unit"],
-                                                [2] = (Data["idx"]:find("Evolved") and tostring(Data["idx"])) or tonumber(Data["idx"]),
+                                                [2] = to_idx,
                                                 [3] = stringtopos(Data["cframe"]),
                                                 [4] = tonumber(Data["rotation"])
                                             }
