@@ -425,12 +425,12 @@ task.spawn(
                         elseif arg[1] == "Upgrade" and #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 and game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton:FindFirstChild("Dark") == nil then
                             task.spawn(
                                 function()
+                                    local Last_Money, Last_Name, Last_CFrame = upgradecost(), game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name, upgradecf(arg[2])
                                     if #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 and game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text == "Max" or game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton:FindFirstChild("Dark") then
-                                        return warn("Unable to Upgrade")
+                                        return warn("Unable To Upgrade")
                                     elseif #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
                                         game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Visible = false
                                     end
-                                    local Last_Money, Last_Name, Last_CFrame = upgradecost(), game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name, upgradecf(arg[2])
                                     macroinsert(
                                         {
                                             ["type"] = "Upgrade",
