@@ -614,12 +614,14 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
                         for _, ItemInfo in next, workspace.Camera:GetChildren() do
                             if ItemInfo:IsA("Model") and #workspace.Camera:GetChildren() > 1 then
                                 VirtualInputManager:SendMouseButtonEvent(5, 5, 0, not UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1), game, 0) Game.Reward_Claim = true
+                                if Options["Record Macro"].Value then Options["Record Macro"]:SetValue(false) end Options["Play Macro"]:Lock()
                             elseif not ItemInfo:IsA("Model") and #workspace.Camera:GetChildren() > 0 then
                                 VirtualInputManager:SendMouseButtonEvent(5, 5, 0, not UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1), game, 0) Game.Reward_Claim = true
-                            else Game.Reward_Claim = false
+                                if Options["Record Macro"].Value then Options["Record Macro"]:SetValue(false) end Options["Play Macro"]:Lock()
+                            else Game.Reward_Claim = false Options["Play Macro"]:UnLock()
                             end
                         end
-                    else Game.Reward_Claim = false
+                    else Game.Reward_Claim = false Options["Play Macro"]:UnLock()
                     end
                 end
             end
