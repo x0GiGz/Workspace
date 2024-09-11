@@ -493,7 +493,7 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
                                     ["cframe"] = tostring(arg[2][3]),
                                     ["rotation"] = tostring(arg[2][4])
                                 }
-                            elseif arg[1] == "Upgrade" and #PlayerGui.UpgradeInterfaces:GetChildren() > 0 and PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton:FindFirstChild("Dark") == nil then
+                            elseif arg[1] == "Upgrade" then
                                 if #PlayerGui.UpgradeInterfaces:GetChildren() > 0 and (PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text == "Max" or PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton:FindFirstChild("Dark") or PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Visible == false) then
                                     return warn("Max Upgrade / Not Enough / Upgrade To Fast")
                                 else
