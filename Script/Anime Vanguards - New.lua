@@ -433,7 +433,7 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
         function()
             if game.PlaceId == 16146832113 then return end
             Macro.Replay_Check = PlayerGui:WaitForChild("Hotbar"):WaitForChild("Main"):WaitForChild("Yen"):GetPropertyChangedSignal("Text"):Connect(function()
-                if PlayerGui.Hotbar.Main.Yen.Text == "0¥" and PlayerGui.Guides.List.StageInfo.Enemies.Amount.Text == "x0" and PlayerGui.Guides.List.StageInfo.Takedowns.Amount.Text == "x0" PlayerGui.Guides.List.StageInfo.Units.Amount.Text == "x0" and Options["Play Macro"].Value then
+                if PlayerGui.Hotbar.Main.Yen.Text == "0¥" and PlayerGui.Guides.List.StageInfo.Enemies.Amount.Text == "x0" and PlayerGui.Guides.List.StageInfo.Takedowns.Amount.Text == "x0" and PlayerGui.Guides.List.StageInfo.Units.Amount.Text == "x0" and Options["Play Macro"].Value then
                     Options["Play Macro"]:SetValue(false)
                     Loader:Notify({Title = "Replaying Macro", Duration = 5, Disable = true})
                     Options["Play Macro"]:SetValue(true)
@@ -445,7 +445,7 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
 
     task.spawn(
         function()
-            if not getrawmetatable then return Loader:Notify({Title = "Can't Record Macro The Excutor Doesn't Support - getrawmetatable"})
+            if not getrawmetatable then return Loader:Notify({Title = "Error", SubContent = "Can't Record Macro The Excutor Doesn't Support [getrawmetatable]"})
             elseif game.PlaceId == 16146832113 then return end
 
             task.spawn(
@@ -456,8 +456,7 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
                         else
                             if Macro.Last_Unit then task.spawn(
                                 function()
-                                    macro_insert
-                                    (
+                                    macro_insert(
                                         {
                                             ["type"] = Macro.Last_Unit["type"],
                                             ["unit"] = Macro.Last_Unit["unit"],
@@ -500,8 +499,7 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
                                 else
                                     upgrade_visible(false)
                                     local unit_data_I = unit_data(PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame.Sprintwagon.Holder.Main.UnitName.Text, tonumber(PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeLabel.Label.Text:match("%d+")))
-                                    macro_insert
-                                    (
+                                    macro_insert(
                                         {
                                             ["type"] = "Upgrade",
                                             ["unit"] = tostring(unit_data_I.name),
@@ -513,8 +511,7 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
                                     task.delay(0.55, upgrade_visible, true)
                                 end
                             elseif arg[1] == "Sell" and #PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
-                                macro_insert
-                                (
+                                macro_insert(
                                     {
                                         ["type"] = "Sell",
                                         ["unit"] = tostring(unit_data(PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame.Sprintwagon.Holder.Main.UnitName.Text).name),
@@ -534,7 +531,7 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
 
     task.spawn(
         function()
-            if not isfile or readfile then return Loader:Notify({Title = "Can't Play Macro The Excutor Doesn't Support - isfile / readfile"})
+            if not isfile or readfile then return Loader:Notify({Title = "Error", SubContent = "Can't Play Macro The Excutor Doesn't Support [isfile / readfile]"})
             elseif game.PlaceId == 16146832113 then return end
 
             task.spawn(
@@ -543,7 +540,7 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
                         function(Value)
                             if Value == true then repeat task.wait() until PlayerGui:FindFirstChild("Hotbar") wait(1)
                                 if not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Options["Selected File [Main]"].Value)) then
-                                    return Loader:Notify({Title = tostring(Options["Selected File [Main]"].Value)..".json is empty"})
+                                    return Loader:Notify({Title = "Error", SubContent = tostring(Options["Selected File [Main]"].Value)..".json is empty"})
                                 else
                                     Macro.Playing = HttpService:JSONDecode(readfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Options["Selected File [Main]"].Value)))
                                     setmetatable(Macro.Playing, Macro.Count)
