@@ -372,7 +372,7 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
     end
 
     local function upgrade_visible(v)
-        if PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
+        if #PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
             PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Visible = v
         end
     end
@@ -383,7 +383,7 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
                 local require_data = require(Data)
                 local unt_data =
                 {
-                    upgradeprice = tostring(require_data.Upgrades[ugp + 2 or 2].Price),
+                    upgradeprice = tostring(require_data.Upgrades[(ugp and ugp + 2) or 2].Price),
 
                     shinnymodel = tostring(require_data.ShinyModel),
                     model = tostring(require_data.Model),
