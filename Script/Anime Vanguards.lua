@@ -296,13 +296,6 @@ Tabs_Secs[2][1]:AddToggle(
 )
 
 do
-    if Options["File Name [Main]"].Value == "" or Options["File Name [Main]"].Value == nil then
-        Buttons.Create:Lock()
-    end
-    if Options["Selected File [Main]"].Value == "" or Options["Selected File [Main]"].Value == nil then
-        Buttons.Delete:Lock()
-    end
-
     Setting:SetLibrary(Loader)
     Setting:SetFolder("CrazyDay/Anime Vanguards/"..game:GetService("Players"):GetUserIdFromNameAsync(game:GetService("Players").LocalPlayer.Name))
     Setting:BuildInterfaceSection(Tabs_Main[#Tabs_Main])
@@ -315,7 +308,15 @@ do
 
     Windows:SelectTab(1)
     Windows:Minimize("Loaded")
+
+    if Options["File Name [Main]"].Value == "" or Options["File Name [Main]"].Value == nil then
+        Buttons.Create:Lock()
+    end
+    if Options["Selected File [Main]"].Value == "" or Options["Selected File [Main]"].Value == nil then
+        Buttons.Delete:Lock()
+    end
 end
+
 
 local function Money()
     local money = game:GetService("Players").LocalPlayer.PlayerGui.Hotbar.Main.Yen.Text:split("¥")[1]
@@ -422,15 +423,14 @@ task.spawn(
                                 }
                             end)
                         elseif arg[1] == "Upgrade" and #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 and game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton:FindFirstChild("Dark") == nil then
-                            if #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
-                                game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Visible = false
-                            end
-                            local Last_Money, Last_Name, Last_CFrame = upgradecost(), game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name, upgradecf(arg[2])
                             task.spawn(
                                 function()
-                                    if game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text == "Max" or game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton:FindFirstChild("Dark") then
-                                        return
+                                    if #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 and game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text == "Max" or game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton:FindFirstChild("Dark") then
+                                        return warn("Unable to Upgrade")
+                                    elseif #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
+                                        game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Visible = false
                                     end
+                                    local Last_Money, Last_Name, Last_CFrame = upgradecost(), game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name, upgradecf(arg[2])
                                     macroinsert(
                                         {
                                             ["type"] = "Upgrade",
@@ -440,7 +440,7 @@ task.spawn(
                                         }
                                     )
                                     writemacro()
-                                    task.delay(0.07, function()
+                                    task.delay(0.055, function()
                                         if #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
                                             game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Visible = true
                                         end
@@ -448,15 +448,19 @@ task.spawn(
                                 end
                             )
                         elseif arg[1] == "Sell" and #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
-                            macroinsert(
-                                {
-                                    ["type"] = "Sell",
-                                    ["money"] = "0",
-                                    ["unit"] = tostring(game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name),
-                                    ["cframe"] = tostring(upgradecf(arg[2]))
-                                }
+                            task.spawn(
+                                function()
+                                    macroinsert(
+                                        {
+                                            ["type"] = "Sell",
+                                            ["money"] = "0",
+                                            ["unit"] = tostring(game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name),
+                                            ["cframe"] = tostring(upgradecf(arg[2]))
+                                        }
+                                    )
+                                    writemacro()
+                                end
                             )
-                            writemacro()
                         end
                     end
                 end
