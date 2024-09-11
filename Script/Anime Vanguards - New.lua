@@ -82,6 +82,11 @@ Tabs_Secs[1][1]:AddDropdown(
             elseif Buttons.Delete and Value ~= "" and Value ~= nil then
                 Buttons.Delete:UnLock()
             end
+            if Options["Record Macro"] and (Value == "" or Value == nil) then
+                Options["Record Macro"]:Lock()
+            elseif Options["Record Macro"] and Value ~= "" and Value ~= nil then
+                Options["Record Macro"]:UnLock()
+            end
         end
     }
 )
@@ -302,8 +307,8 @@ do
 
     Saveed:SetLibrary(Loader)
     Saveed:SetFolder("CrazyDay/Anime Vanguards/"..game:GetService("Players"):GetUserIdFromNameAsync(game:GetService("Players").LocalPlayer.Name))
-    Saveed:IgnoreThemeSettings()
     Saveed:SetIgnoreIndexes({"File Name [Main]", "Record Macro"})
+    Saveed:IgnoreThemeSettings()
     Saveed:BuildConfigSection(Tabs_Main[#Tabs_Main])
 
     Windows:SelectTab(1)
@@ -440,6 +445,7 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
                 if PlayerGui.Hotbar.Main.Yen.Text == "0¥" and PlayerGui.Guides.List.StageInfo.Enemies.Amount.Text == "x0" and PlayerGui.Guides.List.StageInfo.Takedowns.Amount.Text == "x0" and PlayerGui.Guides.List.StageInfo.Units.Amount.Text == "x0" and Options["Play Macro"].Value then
                     Options["Play Macro"]:SetValue(false)
                     Loader:Notify({Title = "Replaying Macro", Duration = 5, Disable = true})
+                    wait(0.75)
                     Options["Play Macro"]:SetValue(true)
                 end
             end
@@ -542,11 +548,16 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
                     Options["Play Macro"]:OnChanged(
                         function(Value)
                             if Value == true then repeat task.wait() until PlayerGui:FindFirstChild("Hotbar") wait(1)
-                                if not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Options["Selected File [Main]"].Value)) then
+                                if Options["Selected File [Main]"].Value == nil then
+                                    return Loader:Notify({Title = "Error", SubContent = "Try to select the file first"})
+                                elseif not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Options["Selected File [Main]"].Value)) then
                                     return Loader:Notify({Title = "Error", SubContent = tostring(Options["Selected File [Main]"].Value)..".json is empty"})
                                 else
                                     Macro.Playing = HttpService:JSONDecode(readfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Options["Selected File [Main]"].Value)))
                                     setmetatable(Macro.Playing, Macro.Count)
+                                    if #Macro.Playing == 0 then
+                                        return Loader:Notify({Title = "Error", SubContent = "The data is empty, try to record macro first"})
+                                    end
 
                                     for i = 1, #Macro.Playing do
                                         wait(Options["Macro Delay"].Value)
