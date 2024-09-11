@@ -497,8 +497,9 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
                                 if #PlayerGui.UpgradeInterfaces:GetChildren() > 0 and (PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text == "Max" or PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton:FindFirstChild("Dark") or PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Visible == false) then
                                     return warn("Max Upgrade / Not Enough / Upgrade To Fast")
                                 else
-                                    upgrade_visible(false)
-                                    local unit_data_I = unit_data(PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame.Sprintwagon.Holder.Main.UnitName.Text, tonumber(PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeLabel.Label.Text:match("%d+")))
+                                    upgrade_visible(false) local num = PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeLabel.Label.Text:split(" ")[2]
+                                    if num:find("[") then num = num:gsub("[","") end if num:find("]") then num = num:gsub("]","") end
+                                    local unit_data_I = unit_data(PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Holder.Main.UnitName.Text, tonumber(num))
                                     macro_insert(
                                         {
                                             ["type"] = "Upgrade",
@@ -508,13 +509,13 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
                                         }
                                     )
                                     macro_write()
-                                    task.delay(0.55, upgrade_visible, true)
+                                    task.delay(0.25, upgrade_visible, true)
                                 end
                             elseif arg[1] == "Sell" and #PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
                                 macro_insert(
                                     {
                                         ["type"] = "Sell",
-                                        ["unit"] = tostring(unit_data(PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame.Sprintwagon.Holder.Main.UnitName.Text).name),
+                                        ["unit"] = tostring(unit_data(PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Holder.Main.UnitName.Text).name),
                                         ["money"] = "0",
                                         ["cframe"] = tostring(unit_cframe(arg[2]))
                                     }
