@@ -377,14 +377,18 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
         end
     end
 
-    local function unit_data(unt, ugp)
+    local function upgrade_cost()
+        local cost = PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text:split(" ")[2]:split("¥")[1]
+        if cost:find(",") then cost = cost:gsub(",","") end
+        return cost
+    end
+
+    local function unit_data(unt)
         for _, Data in next, ReplicatedStorage.Modules.Data.Entities.UnitsData:GetDescendants() do
             if Data.ClassName == "ModuleScript" then
                 local require_data = require(Data)
                 local unt_data =
                 {
-                    upgradeprice = tostring(require_data.Upgrades[(ugp and ugp + 2) or 2].Price),
-
                     shinnymodel = tostring(require_data.ShinyModel),
                     model = tostring(require_data.Model),
                     price = tostring(require_data.Price),
@@ -497,14 +501,12 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
                                 if #PlayerGui.UpgradeInterfaces:GetChildren() > 0 and (PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text == "Max" or PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton:FindFirstChild("Dark") or PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Visible == false) then
                                     return warn("Max Upgrade / Not Enough / Upgrade To Fast")
                                 else
-                                    upgrade_visible(false) local num = PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeLabel.Label.Text:split(" ")[2]
-                                    if num:find("[") then num = num:gsub("[","") end if num:find("]") then num = num:gsub("]","") end
-                                    local unit_data_I = unit_data(PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Holder.Main.UnitName.Text, tonumber(num))
+                                    upgrade_visible(false)
                                     macro_insert(
                                         {
                                             ["type"] = "Upgrade",
-                                            ["unit"] = tostring(unit_data_I.name),
-                                            ["money"] = tostring(unit_data_I.upgradeprice),
+                                            ["unit"] = tostring(unit_data(PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Holder.Main.UnitName.Text).name),
+                                            ["money"] = tostring(upgrade_cost()),
                                             ["cframe"] = tostring(unit_cframe(arg[2]))
                                         }
                                     )
