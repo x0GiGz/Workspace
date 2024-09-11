@@ -213,8 +213,16 @@ Tabs_Secs[1][2]:AddToggle(
         Callback = function(Value)
             if Options["Play Macro"] and Value then
                 Options["Play Macro"]:Lock()
+                Options["Selected File [Main]"]:Lock()
+                Options["File Name [Main]"]:Lock()
+                Buttons.Delete:Lock()
+                Buttons.Create:Lock()
             elseif Options["Play Macro"] and not Value then
                 Options["Play Macro"]:UnLock()
+                Options["Selected File [Main]"]:UnLock()
+                Options["File Name [Main]"]:UnLock()
+                Buttons.Delete:UnLock()
+                Buttons.Create:UnLock()
             end
         end
     }
