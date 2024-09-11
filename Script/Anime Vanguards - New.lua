@@ -509,7 +509,7 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
                                         }
                                     )
                                     macro_write()
-                                    task.delay(0.25, upgrade_visible, true)
+                                    task.delay(0.065, upgrade_visible, true)
                                 end
                             elseif arg[1] == "Sell" and #PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
                                 macro_insert(
