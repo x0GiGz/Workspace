@@ -531,7 +531,7 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
 
     task.spawn(
         function()
-            if not isfile or readfile then return Loader:Notify({Title = "Error", SubContent = "Can't Play Macro The Excutor Doesn't Support [isfile / readfile]"})
+            if not isfile or not readfile then return Loader:Notify({Title = "Error", SubContent = "Can't Play Macro The Excutor Doesn't Support [isfile / readfile]"})
             elseif game.PlaceId == 16146832113 then return end
 
             task.spawn(
