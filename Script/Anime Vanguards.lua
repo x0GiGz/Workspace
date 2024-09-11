@@ -308,10 +308,12 @@ end
 
 local function UnitMoney(text)
     for _ , Unit in next, game:GetService("Players").LocalPlayer.PlayerGui.Hotbar.Main.Units:GetChildren() do
-        if Unit:IsA("Frame") and Unit:FindFirstChild("UnitTemplate") and Unit.UnitTemplate.Holder.Main.UnitName.Text == text then
-            local money = Unit.UnitTemplate.Holder.Main.Price.Text:split("¥")[1]
-            if money:find(",") then money = money:gsub(",","") end
-            return tonumber(money)
+        if Unit:IsA("Frame") and Unit:FindFirstChild("UnitTemplate") then
+            if Unit.UnitTemplate.Holder.Main.UnitName.Text == text or string.find(Unit.UnitTemplate.Holder.Main.UnitName.Text, text) then
+                local money = Unit.UnitTemplate.Holder.Main.Price.Text:split("¥")[1]
+                if money:find(",") then money = money:gsub(",","") end
+                return tonumber(money)
+            end
         end
     end
 end
@@ -392,12 +394,10 @@ task.spawn(
                 function()
                     if Loader.Unloaded then return
                     elseif Options["Record Macro"].Value and self.Name == "UnitEvent" and (arg[1] == "Render" or arg[1] == "Upgrade" or arg[1] == "Sell") then
-                        if arg[1] == "Render" and Money() >= UnitMoney(arg[2][1]) then
+                        if arg[1] == "Render" then
                             task.spawn(function()
                                 Macro.Last_Unit =
                                 {
-                                    ["money"] = tostring(UnitMoney(arg[2][1])),
-                                    ["unit"] = tostring(arg[2][1]),
                                     ["idx"] = tostring(arg[2][2]),
                                     ["cframe"] = tostring(arg[2][3]),
                                     ["rotation"] = tostring(arg[2][4])
@@ -523,8 +523,8 @@ task.spawn(
                 macroinsert(
                     {
                         ["type"] = "Render",
-                        ["money"] = Macro.Last_Unit["money"],
-                        ["unit"] = Macro.Last_Unit["unit"],
+                        ["money"] = tostring(UnitMoney(game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name)),
+                        ["unit"] = tostring(game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name),
                         ["idx"] = Macro.Last_Unit["idx"],
                         ["cframe"] = Macro.Last_Unit["cframe"],
                         ["rotation"] = Macro.Last_Unit["rotation"]
