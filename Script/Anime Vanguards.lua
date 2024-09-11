@@ -90,10 +90,10 @@ Tabs_Secs[1][1]:AddInput(
     "File Name [Main]",
     {
         Title = "Create File",
-        Placeholder = "Name.",
+        Placeholder = "Name Here",
         Numeric = false,
         Finished = false,
-        Default = "",
+        Default = nil,
         Callback = function(Value)
             if Buttons.Create and (Value == "" or Value == nil) then
                 Buttons.Create:Lock()
@@ -132,6 +132,7 @@ Buttons.Create = Tabs_Secs[1][1]:AddButton(
                         Duration = 5
                     }
                 )
+                Options["File Name [Main]"]:SetValue("")
             elseif error then
                 Loader:Notify(
                     {
@@ -382,6 +383,7 @@ local function upgradepos(unt)
     end
 end
 
+
 local function NavigationGUISelect(Object)
     local GuiService = game:GetService("GuiService")
     repeat
@@ -420,10 +422,12 @@ task.spawn(
                                 }
                             end)
                         elseif arg[1] == "Upgrade" and #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 and game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton:FindFirstChild("Dark") == nil then
-                            local Last_Text, Last_Money, Last_Name, Last_CFrame = game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text, upgradecost(), game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name, upgradecf(arg[2])
+                            if #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
+                                game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Visible = false
+                            end
+                            local Last_Money, Last_Name, Last_CFrame = upgradecost(), game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name, upgradecf(arg[2])
                             task.spawn(
                                 function()
-                                    repeat task.wait() if game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text == "Max" or game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton:FindFirstChild("Dark") then break end until game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text ~= Last_Text
                                     if game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text == "Max" or game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton:FindFirstChild("Dark") then
                                         return
                                     end
@@ -436,6 +440,11 @@ task.spawn(
                                         }
                                     )
                                     writemacro()
+                                    task.delay(0.07, function()
+                                        if #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
+                                            game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Visible = true
+                                        end
+                                    end)
                                 end
                             )
                         elseif arg[1] == "Sell" and #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
@@ -547,11 +556,11 @@ task.spawn(
                                 ["idx"] = Macro.Last_Unit["idx"],
                                 ["cframe"] = Macro.Last_Unit["cframe"],
                                 ["rotation"] = Macro.Last_Unit["rotation"]
-        
+
                             }
                         )
                         writemacro()
-                        Macro.Last_Unit = nil       
+                        Macro.Last_Unit = nil
                     end
                 )
             end
