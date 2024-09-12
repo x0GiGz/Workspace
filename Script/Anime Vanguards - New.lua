@@ -354,8 +354,8 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
             GuiService.SelectedObject = Object
             wait()
         until GuiService.SelectedObject == Object
-        VirtualInputManager:SendKeyEvent(true, "Return", false, nil)
-        VirtualInputManager:SendKeyEvent(false, "Return", false, nil)
+        VirtualInputManager:SendKeyEvent(true, "Return", 2, nil)
+        VirtualInputManager:SendKeyEvent(false, "Return", 2, nil)
         task.wait(0.25)
         GuiService.GuiNavigationEnabled = false
         GuiService.SelectedObject = nil
@@ -466,17 +466,21 @@ local Players, LocalPlayer, PlayerGui, ReplicatedStorage, HttpService, VirtualIn
                         else
                             if Macro.Last_Unit then task.spawn(
                                 function()
-                                    macro_insert(
-                                        {
-                                            ["type"] = Macro.Last_Unit["type"],
-                                            ["unit"] = Macro.Last_Unit["unit"],
-                                            ["money"] = Macro.Last_Unit["money"],
-                                            ["cframe"] = Macro.Last_Unit["cframe"],
-                                            ["rotation"] = Macro.Last_Unit["rotation"]
-
-                                        }
-                                    )
-                                    macro_write() Macro.Last_Unit = nil
+                                    if v.Position == stringtopos(Macro.Last_Unit["cframe"]) or (v.Position - stringtopos(Macro.Last_Unit["cframe"])).Magnitude <= 2 then
+                                        macro_insert(
+                                            {
+                                                ["type"] = Macro.Last_Unit["type"],
+                                                ["unit"] = Macro.Last_Unit["unit"],
+                                                ["money"] = Macro.Last_Unit["money"],
+                                                ["cframe"] = Macro.Last_Unit["cframe"],
+                                                ["rotation"] = Macro.Last_Unit["rotation"]
+    
+                                            }
+                                        )
+                                        macro_write() Macro.Last_Unit = nil
+                                    else
+                                        Macro.Last_Unit = nil
+                                    end
                                 end
                             )
                             end
