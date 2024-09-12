@@ -2386,6 +2386,7 @@ local aa = {
             z.SetDesc = A.SetDesc
             z.Lock = A.Lock
             z.UnLock = A.UnLock
+            z.IsLocked = A.IsLocked
             local B =
                 s(
                 "Frame",
@@ -2869,6 +2870,7 @@ local aa = {
             l.SetDesc = m.SetDesc
             l.Lock = m.Lock
             l.UnLock = m.UnLock
+            l.IsLocked = m.IsLocked
             local search = ac(f.Textbox)()
             local n, o =
                 e(
@@ -3340,6 +3342,7 @@ local aa = {
             h.SetDesc = i.SetDesc
             h.Lock = i.Lock
             h.UnLock = i.UnLock
+            h.IsLocked = i.IsLocked
             local j = ac(aj.Textbox)(i.Frame, true)
             j.Frame.Position = UDim2.new(1, -10, 0.5, 0)
             j.Frame.AnchorPoint = Vector2.new(1, 0.5)
@@ -3426,6 +3429,7 @@ local aa = {
             h.SetDesc = j.SetDesc
             h.Lock = j.Lock
             h.UnLock = j.UnLock
+            h.IsLocked = j.IsLocked
             local k =
                 ai(
                 "TextLabel",
@@ -3648,6 +3652,7 @@ local aa = {
             h.SetDesc = j.SetDesc
             h.Lock = j.Lock
             h.UnLock = j.UnLock
+            h.IsLocked = j.IsLocked
             local k =
                 ai(
                 "ImageLabel",
@@ -3784,6 +3789,7 @@ local aa = {
             h.SetDesc = i.SetDesc
             h.Lock = i.Lock
             h.UnLock = i.UnLock
+            h.IsLocked = i.IsLocked
             local j, k =
                 ai(
                     "ImageLabel",
