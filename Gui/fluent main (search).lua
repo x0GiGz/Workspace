@@ -2988,8 +2988,8 @@ local aa = {
                     v.Position = UDim2.fromOffset(p.AbsolutePosition.X - 1, p.AbsolutePosition.Y - 5 - w)
                 end, 0
             local y, z = function()
-                if #l.Values > 10 then
-                    v.Size = UDim2.fromOffset(160, 392)
+                if #l.Values > 5 then
+                    v.Size = UDim2.fromOffset(160, 244)
                 else
                     v.Size = UDim2.fromOffset(160, s.AbsoluteContentSize.Y + 10)
                 end
