@@ -2831,6 +2831,12 @@ local aa = {
                     ab()
                 end
             )
+            p.AddSignal(
+                A.LockButton:GetPropertyChangedSignal "Visible",
+                function()
+                    z.IsLocked = A.LockButton.Visible
+                end
+            )
             z:Display()
             y.Options[w] = z
             return z
@@ -3029,6 +3035,12 @@ local aa = {
                 else l:UpdateText()
                 end
             end)
+            c.AddSignal(
+                m.LockButton:GetPropertyChangedSignal "Visible",
+                function()
+                    l.IsLocked = m.LockButton.Visible
+                end
+            )
             function l.Open(B)
                 l.Opened = true
                 A.ScrollingEnabled = false
@@ -3395,6 +3407,12 @@ local aa = {
                 i:Destroy()
                 g.Options[e] = nil
             end
+            ai(
+                i.LockButton:GetPropertyChangedSignal "Visible",
+                function()
+                    h.IsLocked = i.LockButton.Visible
+                end
+            )
             g.Options[e] = h
             return h
         end
@@ -3607,6 +3625,12 @@ local aa = {
                     end
                 end
             )
+            ah.AddSignal(
+                j.LockButton:GetPropertyChangedSignal "Visible",
+                function()
+                    h.IsLocked = j.LockButton.Visible
+                end
+            )
             g.Options[e] = h
             return h
         end
@@ -3747,6 +3771,12 @@ local aa = {
                     end
                 end
             )
+            ah.AddSignal(
+                j.LockButton:GetPropertyChangedSignal "Visible",
+                function()
+                    h.IsLocked = j.LockButton.Visible
+                end
+            )
             function h.OnChanged(p, s)
                 h.Changed = s
                 s(h.Value)
@@ -3850,6 +3880,12 @@ local aa = {
                 i.Frame.MouseButton1Click,
                 function()
                     h:SetValue(not h.Value)
+                end
+            )
+            ah.AddSignal(
+                i.LockButton:GetPropertyChangedSignal "Visible",
+                function()
+                    h.IsLocked = i.LockButton.Visible
                 end
             )
             h:SetValue(h.Value)
