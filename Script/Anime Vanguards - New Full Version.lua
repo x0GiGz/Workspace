@@ -1,4 +1,5 @@
 repeat task.wait() until game:IsLoaded() and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("LoadingScreen") == nil and game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("LobbyLoadingScreen") == nil
+if game:GetService("CoreGui"):FindFirstChild("CrazyDay") then return end
 local Loader = loadstring(game:HttpGet("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Gui/fluent%20main%20(search).lua"))()
 local Saveed = loadstring(game:HttpGet("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Gui/fluent%20save%20config.lua"))()
 local Setting = loadstring(game:HttpGet("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Gui/fluent%20interfaces.lua"))()
@@ -12,7 +13,7 @@ local Windows = Loader:CreateWindow(
         Size = UDim2.fromOffset(540, 440),
         Theme = "Darker",
         Acrylic = true,
-        UpdateDate = "09/11/2024 - 1.0",
+        UpdateDate = "09/14/2024 - 1.0",
         UpdateLog = "● Release",
         IconVisual = nil,
         BlackScreen = false,
