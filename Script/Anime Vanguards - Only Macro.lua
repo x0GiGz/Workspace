@@ -43,12 +43,14 @@ local Game =
 
 local Macro =
 {
-    Value = {},
+    Value = {Data = {}},
     Count = {
         __len = function(num)
             local count = 0
             for idx, data in next, num do
-                count += 1
+                if idx ~= "Data" then
+                    count += 1 
+                end
             end
             return count
         end
@@ -298,7 +300,7 @@ function Create_Macro()
             elseif isfile(link) then
                 error("This File is Already Available", 9)
             else
-                SetFile:CheckFile(link, {})
+                SetFile:CheckFile(link, {Data = {}})
 
                 Options["Macro File"]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
                 Options["Macro File"]:SetValue(Options["File Name"].Value)
@@ -348,28 +350,43 @@ if #game:GetService("Players"):GetChildren() > 1 and game.PlaceId ~= 16146832113
 else
     if game.PlaceId ~= 16146832113 then
 
+        local function Stage_to_Name()
+            local a = require(game:GetService("ReplicatedStorage").Modules.Gameplay.GameHandler)
+            local b = a.GameData.Stage
+
+            local c = require(game:GetService("ReplicatedStorage").Modules.Data.StagesData.Story[b][b])
+
+            return c.Name
+        end
+
         local function Macro_Write()
             writefile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Options["Macro File"].Value), game:GetService("HttpService"):JSONEncode(Macro.Value))
         end
-    
+
         local function Macro_Len()
             setmetatable(Macro.Value, Macro.Count)
             return #Macro.Value
         end
-    
+
         local function Macro_Insert(data)
             if not Macro.Value[tostring(Macro_Len() + 1)] then
                    Macro.Value[tostring(Macro_Len() + 1 )] = data
             end
         end
-    
+
+        local function Macro_Data_World()
+            if not Macro.Value.Data.World then
+                Macro.Value.Data.World = tostring(Stage_to_Name())
+            end
+        end
+
         local function Yen()
             local yen = game:GetService("Players").LocalPlayer.PlayerGui.Hotbar.Main.Yen.Text:split("¥")[1]
             if yen:find(",") then yen = yen:gsub(",","")
             end
             return yen
         end
-    
+
         local function Unit_CFrame(unt)
             for _, Unit in next, workspace.UnitVisuals.UnitCircles:GetChildren() do
                 if Unit.Name == unt then
@@ -377,7 +394,7 @@ else
                 end
             end
         end
-    
+
         local function Unit_Position(unt)
             if type(unt) == "string" then
                 unt = stringtopos(unt)
@@ -388,7 +405,7 @@ else
                 end
             end
         end
-    
+
         local function Unit_Data(unt)
             for _, Data in next, game:GetService("ReplicatedStorage").Modules.Data.Entities.UnitsData:GetDescendants() do
                 if Data.ClassName == "ModuleScript" then
@@ -407,16 +424,16 @@ else
                 end
             end
         end
-    
+
         local function Money_Write(type)
             if Options["Record Type"].Value == "Money" or Options["Record Type"].Value == "Hybrid" then
                 if type == "Upgrade" then
                     local Totals = game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text:split(" ")[2]:split("¥")[1]
-    
+
                     if Totals:find(",") then
                        Totals = Totals:gsub(",","")
                     end
-    
+
                     return Totals
                 else
                     return Unit_Data(type).price
@@ -425,7 +442,7 @@ else
                 return 0
             end
         end
-    
+
         local function Time_Write()
             if Options["Record Type"].Value == "Time" or Options["Record Type"].Value == "Hybrid" then
                 if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("SkipWave") and game:GetService("Players").LocalPlayer.PlayerGui.SkipWave.Holder.Description.Text == "Vote start:" then
@@ -449,11 +466,11 @@ else
                 local Tick = tick() - Game.Time
                 local Secs = math.floor(Tick) % ((9e9 * 9e9) + (9e9 * 9e9))
                 local Mills = string.format(".%.03d", (Tick % 1) * 1000)
-    
+
                 return Secs..Mills
             end
         end
-    
+
         task.spawn(
             function()
                 Game.Signals.Place = workspace.UnitVisuals.UnitCircles.ChildAdded:Connect(function (v)
@@ -462,7 +479,8 @@ else
                     else
                         repeat wait() until #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0
                         local unit = game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1]:WaitForChild("Unit"):WaitForChild("Main"):WaitForChild("UnitFrame"):FindFirstChildOfClass("Frame").Name
-    
+
+                        Macro_Data_World()
                         Macro_Insert(
                             {
                                 ["type"] = "Place",
@@ -485,8 +503,9 @@ else
                         local Upgrade_Button, Sell_Button, Priority = v:WaitForChild("Stats"):WaitForChild("UpgradeButton"):WaitForChild("Button"), v:WaitForChild("Unit"):WaitForChild("Sell"):WaitForChild("Button"), v:WaitForChild("Unit"):WaitForChild("Priority"):WaitForChild("Button")
                         Game.Signals[v.Name.."Upgrade"] = Upgrade_Button.InputBegan:Connect(
                             function(input)
-                                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch and Options["Macro Record"].Value then
                                     if v.Stats.UpgradeButton.Inner.Label.Text ~= "Max" and v.Stats.UpgradeButton:FindFirstChild("Dark") == nil then
+                                        Macro_Data_World()
                                         Macro_Insert(
                                             {
                                                 ["type"] = "Upgrade",
@@ -503,7 +522,8 @@ else
                         )
                         Game.Signals[v.Name.."Sell"] = Sell_Button.InputBegan:Connect(
                             function(input)
-                                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch and Options["Macro Record"].Value then
+                                    Macro_Data_World()
                                     Macro_Insert(
                                         {
                                             ["type"] = "Sell",
@@ -519,7 +539,8 @@ else
                         )
                         Game.Signals[v.Name.."Priority"] = Priority.InputBegan:Connect(
                             function(input)
-                                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch and Options["Macro Record"].Value then
+                                    Macro_Data_World()
                                     Macro_Insert(
                                         {
                                             ["type"] = "ChangePriority",
@@ -554,7 +575,7 @@ else
                 )
             end
         )
-    
+
         task.spawn(
             function()
                 Options["Macro Play"]:OnChanged(
@@ -562,7 +583,7 @@ else
                         if Value == true then
                             wait(0.35)
                             if Options["Macro File"].Value == nil then
-                                return Loader:Notify({Title = "Error", SubContent = "Select Macro File First"})
+                                return Loader:Notify({Title = "Error", SubContent = "Select Macro File First", Disable = true, Duration = 5})
                             elseif not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Options["Macro File"].Value)) then
                                 return Loader:Notify({Title = "Error", SubContent = tostring(Options["Macro File"].Value)..".json is empty"})
                             else
@@ -570,11 +591,13 @@ else
                                 setmetatable(Macro.Playing, Macro.Count)
                                 if #Macro.Playing == 0 then
                                     return Loader:Notify({Title = "Error", SubContent = "Record Action First"})
+                                elseif Stage_to_Name() ~= Macro.Playing.Data.World then
+                                    return Loader:Notify({Title = "Error", SubContent = "Game stage doesn't match the data"})
                                 else
                                     for i = 1, #Macro.Playing do
                                         wait(Options["Macro Delay"].Value)
                                         local Data = Macro.Playing[tostring(i)]
-    
+
                                         if Data["money"] then
                                             repeat task.wait() until tonumber(Yen()) >= tonumber(Data["money"]) or not Options["Play Macro"].Value or Loader.Unloaded
                                         end
