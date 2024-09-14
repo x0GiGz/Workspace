@@ -957,7 +957,7 @@ else
                             ["unit"] = tostring(unit),
                             ["money"] = tostring(Money_Write(unit)),
                             ["time"] = tostring(Time_Write()),
-                            ["cframe"] = tostring(v.Position.X..", "..(v.Position.Y + 0.65)..", "..v.Position.Z)
+                            ["cframe"] = tostring(v.Position)
                         }
                     )
                     Macro_Write()
