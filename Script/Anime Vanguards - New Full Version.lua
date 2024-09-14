@@ -761,6 +761,12 @@ else
         NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.PopupScreen.BaseConfirmationFrame.Main.Buttons:WaitForChild("Yes"):WaitForChild("Button"))
     end
 
+    local function Upgrade_Visible(v)
+        if #OwnGui.UpgradeInterfaces:GetChildren() > 0 then
+            OwnGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Visible = v
+        end
+    end
+
     local function Yen()
         local TexT = game:GetService("Players").LocalPlayer.PlayerGui.Hotbar.Main.Yen.Text:split("¥")[1]
 
@@ -975,6 +981,7 @@ else
                         function(input)
                             if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Configs["Macro Record"].Value then
                                 if v.Stats.UpgradeButton.Inner.Label.Text ~= "Max" and v.Stats.UpgradeButton:FindFirstChild("Dark") == nil then
+                                    Upgrade_Visible(false)
                                     Macro_Data_Write()
                                     Macro_Insert(
                                         {
@@ -986,6 +993,8 @@ else
                                         }
                                     )
                                     Macro_Write()
+                                    task.delay(0.065, Upgrade_Visible, true)
+
                                 end
                             end
                         end
