@@ -401,6 +401,17 @@ Tabs_Secs[3][1]:AddDropdown(
     }
 )
 
+Game.Buttons.Equip =
+Tabs_Secs[3][1]:AddButton(
+    {
+        Title = "Equip Units",
+        Description = "Equip all the units in selected macro",
+        Callback = function()
+            Equip_Macro()
+        end
+    }
+)
+
 Tabs_Secs[3][1]:AddInput(
     "File Name",
     {
@@ -719,6 +730,7 @@ if game.PlaceId == 16146832113 then
 else
     Game.Others.Notify1 = Loader:Notify({Title = "Status : None", SubContent = "\n", Disable = true})
     local OwnGui = game:GetService("Players").LocalPlayer.PlayerGui
+    Game.Buttons.Equip:Lock()
 
     function Return_Lobby()
         NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.Windows.Settings.Main.Settings.Misc.Settings.TeleportToLobby.Teleport.Button)
@@ -760,9 +772,18 @@ else
         end
     end
 
-    local function Macro_Data_World()
+    local function Macro_Data_Write()
         if not Macro.Value.Data.World then
             Macro.Value.Data.World = tostring(Stage_Name())
+        end
+        if not Macro.Value.Data.Units then
+            Macro.Value.Data.Units = {}
+            for I, V in next, OwnGui.Hotbar.Main.Units:GetChildren() do
+                if V:IsA("Frame") then
+                    if V:FindFirstChild("Locked") or V:FindFirstChild("UnitTemplate") == nil then continue end
+                    table.insert(Macro.Value.Data.Units, V.UnitTemplate.Holder.Main.UnitName.Text)
+                end
+            end
         end
     end
 
@@ -910,7 +931,7 @@ else
                     repeat wait() until #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0
                     local unit = game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1]:WaitForChild("Unit"):WaitForChild("Main"):WaitForChild("UnitFrame"):FindFirstChildOfClass("Frame").Name
 
-                    Macro_Data_World()
+                    Macro_Data_Write()
                     Macro_Insert(
                         {
                             ["type"] = "Place",
@@ -935,7 +956,7 @@ else
                         function(input)
                             if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Configs["Macro Record"].Value then
                                 if v.Stats.UpgradeButton.Inner.Label.Text ~= "Max" and v.Stats.UpgradeButton:FindFirstChild("Dark") == nil then
-                                    Macro_Data_World()
+                                    Macro_Data_Write()
                                     Macro_Insert(
                                         {
                                             ["type"] = "Upgrade",
@@ -953,7 +974,7 @@ else
                     Game.Signals[v.Name.."Sell"] = Sell_Button.InputBegan:Connect(
                         function(input)
                             if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Configs["Macro Record"].Value then
-                                Macro_Data_World()
+                                Macro_Data_Write()
                                 Macro_Insert(
                                     {
                                         ["type"] = "Sell",
@@ -970,7 +991,7 @@ else
                     Game.Signals[v.Name.."Priority"] = Priority.InputBegan:Connect(
                         function(input)
                             if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Configs["Macro Record"].Value then
-                                Macro_Data_World()
+                                Macro_Data_Write()
                                 Macro_Insert(
                                     {
                                         ["type"] = "ChangePriority",
@@ -1352,6 +1373,31 @@ function Delete_Macro()
         Loader:Notify({Title = "Successful Delete : "..text..".json", Disable = true, Duration = 5})
     else
         Loader:Notify({Title = "Unsuccessful Delete : "..tostring(error), Disable = true, Duration = 5})
+    end
+end
+
+function Equip_Macro()
+    if not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Macro File"].Value)) then
+       return Loader:Notify({Title = "Error", SubContent = "The file cannot be found", Duration = 5, Disable = true})
+    else
+        local XData = game:GetService("HttpService"):JSONDecode(readfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Macro File"].Value)))
+        setmetatable(XData, Macro.Len)
+
+        if #XData == 0 then
+            return Loader:Notify({Title = "Error", SubContent = "Record Action First", Disable = true, Duration = 5})
+        elseif not XData.Data.Units then
+            return Loader:Notify({Title = "Error", SubContent = "Units Data is Invaild"})
+        else
+            game:GetService("ReplicatedStorage").Networking.Units.EquipEvent:FireServer("UnequipAll")
+            for i = 1, #XData.Data.Units do
+                for I, V in next, game:GetService("Players").LocalPlayer.PlayerGui.Windows.Units.Holder.Main.Units:GetChildren() do
+                    if V:IsA("Frame") and V.Holder.Main.UnitName.Text == XData.Data.Units[i] then
+                        game:GetService("ReplicatedStorage").Networking.Units.EquipEvent:FireServer("Equip", V.Name)
+                        break
+                    end
+                end
+            end
+        end
     end
 end
 
