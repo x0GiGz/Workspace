@@ -938,7 +938,7 @@ else
                             ["unit"] = tostring(unit),
                             ["money"] = tostring(Money_Write(unit)),
                             ["time"] = tostring(Time_Write()),
-                            ["cframe"] = tostring(v.Position.X..", "..(v.Position.Y + 0.8)..", "..v.Position.Z)
+                            ["cframe"] = tostring(v.Position.X..", "..(v.Position.Y + 0.65)..", "..v.Position.Z)
                         }
                     )
                     Macro_Write()
@@ -955,7 +955,7 @@ else
                     Game.Signals[v.Name.."Upgrade"] = Upgrade_Button.InputBegan:Connect(
                         function(input)
                             if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Configs["Macro Record"].Value then
-                                if v.Stats.UpgradeButton.Inner.Label.Text ~= "Max" and v.Stats.UpgradeButton:FindFirstChild("Dark") == nil then
+                                if v.Stats.UpgradeButton.Inner.Label.Text ~= "Max" and tonumber(Yen()) >= tonumber(Money_Write("Upgrade")) then
                                     Macro_Data_Write()
                                     Macro_Insert(
                                         {
