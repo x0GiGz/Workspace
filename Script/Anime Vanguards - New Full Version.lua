@@ -1150,10 +1150,13 @@ else
                             local Visual = OwnGui.EndScreen
                             if Configs["Auto Leave"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Leave") and Visual.Container.EndScreen:FindFirstChild("Leave").Visible then
                                 NavigationGUISelect(Visual.Container.EndScreen.Leave.Button)
+                                wait(1)
                             elseif Configs["Auto Next"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Next") and Visual.Container.EndScreen:FindFirstChild("Next").Visible then
                                 NavigationGUISelect(Visual.Container.EndScreen.Next.Button)
+                                wait(1)
                             elseif Configs["Auto Retry"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Retry") and Visual.Container.EndScreen:FindFirstChild("Retry").Visible then
                                 NavigationGUISelect(Visual.Container.EndScreen.Retry.Button)
+                                wait(1)
                             end
                         end
                     )
