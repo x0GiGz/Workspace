@@ -32,7 +32,7 @@ local Tabs_Main =
 local Tabs_Secs =
 {
     [1] = {Tabs_Main[1]:AddSection("Settings"), Tabs_Main[1]:AddSection("Story"), Tabs_Main[1]:AddSection("Legend Stage"), Tabs_Main[1]:AddSection("Challenge")},
-    [2] = {Tabs_Main[2]:AddSection("Game"), Tabs_Main[2]:AddSection("Webhook")},
+    [2] = {Tabs_Main[2]:AddSection("Game"), Tabs_Main[2]:AddSection("Webhook"), Tabs_Main[2]:AddSection("Misc")},
     [3] = {Tabs_Main[3]:AddSection("Setting"), Tabs_Main[3]:AddSection("Macro"), Tabs_Main[3]:AddSection("Story"), Tabs_Main[3]:AddSection("Legend Stage"), Tabs_Main[3]:AddSection("Challenge")}
 }
 
@@ -368,6 +368,26 @@ Tabs_Secs[2][2]:AddToggle(
     {
         Title = "Send Webhook",
         Description = "Send a notifaction to your Discord when the game ends, displaying information about the match and what rewards you've received",
+        Default = false
+    }
+)
+
+Tabs_Secs[2][3]:AddSlider(
+    "Select Wave",
+    {
+        Title = "Select Wave",
+        Default = 1,
+        Min = 1,
+        Max = 250,
+        Rounding = 0
+    }
+)
+
+Tabs_Secs[2][3]:AddToggle(
+    "Auto Leave Select Wave",
+    {
+        Title = "Auto Leave",
+        Description = "Automatically teleports to the lobby if select wave",
         Default = false
     }
 )
@@ -1228,6 +1248,20 @@ else
                     end
                 end
             )
+        end
+    )
+
+    task.spawn(
+        function()
+            while true and wait() do
+                if Loader.Unloaded then break
+                else
+                    if Configs["Auto Leave Select Wave"].Value and tonumber(OwnGui.HUD.Map.WavesAmount.Text) >= tonumber(Configs["Select Wave"].Value) then
+                        Return_Lobby()
+                        wait(10)
+                    end
+                end
+            end
         end
     )
 
