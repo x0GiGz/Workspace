@@ -665,7 +665,6 @@ if game.PlaceId == 16146832113 then
                 elseif not Configs["Auto Start"].Value then
                 else
                     if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("MiniLobbyInterface") then
-                        task.wait(0.25)
                         NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.MiniLobbyInterface.Holder.Buttons.Start.Button)
                         break
                     end
@@ -975,7 +974,7 @@ else
                     Game.Signals[v.Name.."Upgrade"] = Upgrade_Button.InputBegan:Connect(
                         function(input)
                             if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Configs["Macro Record"].Value then
-                                if v.Stats.UpgradeButton.Inner.Label.Text ~= "Max" and tonumber(Yen()) >= tonumber(Money_Write("Upgrade")) then
+                                if v.Stats.UpgradeButton.Inner.Label.Text ~= "Max" and v.Stats.UpgradeButton:FindFirstChild("Dark") == nil then
                                     Macro_Data_Write()
                                     Macro_Insert(
                                         {
@@ -1170,13 +1169,13 @@ else
                             local Visual = OwnGui.EndScreen
                             if Configs["Auto Leave"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Leave") and Visual.Container.EndScreen:FindFirstChild("Leave").Visible then
                                 NavigationGUISelect(Visual.Container.EndScreen.Leave.Button)
-                                wait(1)
+                                wait(3)
                             elseif Configs["Auto Next"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Next") and Visual.Container.EndScreen:FindFirstChild("Next").Visible then
                                 NavigationGUISelect(Visual.Container.EndScreen.Next.Button)
-                                wait(1)
+                                wait(3)
                             elseif Configs["Auto Retry"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Retry") and Visual.Container.EndScreen:FindFirstChild("Retry").Visible then
                                 NavigationGUISelect(Visual.Container.EndScreen.Retry.Button)
-                                wait(1)
+                                wait(3)
                             end
                         end
                     )
