@@ -497,7 +497,7 @@ Tabs_Secs[3][2]:AddToggle(
         Description =  "Experiencing issues with the recorded macro? Try not to press upgrade to early, place units to close to each other",
         Default = false,
         Callback = function(Value)
-            if Value then Macro.Value = {Data = {}} end
+            if Value then Macro.Value = {Data = {}} if game.PlaceId ~= 16146832113 and #game:GetService("Players"):GetChildren() > 1 then game:GetService("Players").LocalPlayer:Kick("Make sure that in The server is no other than you") end end
         end
     }
 )
@@ -756,17 +756,17 @@ else
     Game.Buttons.Equip:Lock()
 
     function Return_Lobby()
-        NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.Windows.Settings.Main.Settings.Misc.Settings.TeleportToLobby.Teleport.Button)
+        NavigationGUISelect(OwnGui.Windows.Settings.Main.Settings.Misc.Settings.TeleportToLobby.Teleport.Button)
 
-        game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("PopupScreen"):WaitForChild("Background").Visible = false
-        game:GetService("Players").LocalPlayer.PlayerGui.PopupScreen.BaseConfirmationFrame.Size = UDim2.fromOffset(0.1, 0.1)
-        game:GetService("Players").LocalPlayer.PlayerGui.PopupScreen.BaseConfirmationFrame:WaitForChild("Main"):WaitForChild("Description").Visible = false
+        OwnGui:WaitForChild("PopupScreen"):WaitForChild("Background").Visible = false
+        OwnGui.PopupScreen.BaseConfirmationFrame.Size = UDim2.fromOffset(0.1, 0.1)
+        OwnGui.PopupScreen.BaseConfirmationFrame:WaitForChild("Main"):WaitForChild("Description").Visible = false
 
-        NavigationGUISelect(game:GetService("Players").LocalPlayer.PlayerGui.PopupScreen.BaseConfirmationFrame.Main.Buttons:WaitForChild("Yes"):WaitForChild("Button"))
+        NavigationGUISelect(OwnGui.PopupScreen.BaseConfirmationFrame.Main.Buttons:WaitForChild("Yes"):WaitForChild("Button"))
     end
 
     local function Yen()
-        local TexT = game:GetService("Players").LocalPlayer.PlayerGui.Hotbar.Main.Yen.Text:split("¥")[1]
+        local TexT = OwnGui.Hotbar.Main.Yen.Text:split("¥")[1]
 
         if TexT:find(",") then
            TexT = TexT:gsub(",","")
@@ -858,7 +858,7 @@ else
         if OwnGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text == "Max" then
             return Unit_Data(TexT).upgradeprice[#Unit_Data(TexT).upgradeprice].Price
         else
-            local num = game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeLabel.Label.Text:split(" ")[2]:gsub("%[",""):gsub("%]","")
+            local num = OwnGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeLabel.Label.Text:split(" ")[2]:gsub("%[",""):gsub("%]","")
             return Unit_Data(TexT).upgradeprice[tonumber(num) + 1].Price
         end
     end
@@ -967,11 +967,11 @@ else
                 if Loader.Unloaded or not Configs["Macro Record"].Value then
                     return
                 else
-                    if #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
-                        game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1]:Destroy()
+                    if #OwnGui.UpgradeInterfaces:GetChildren() > 0 then
+                        OwnGui.UpgradeInterfaces:GetChildren()[1]:Destroy()
                     end
-                    repeat wait() until #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0
-                    local unit = game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1]:WaitForChild("Unit"):WaitForChild("Main"):WaitForChild("UnitFrame"):FindFirstChildOfClass("Frame").Name
+                    repeat wait() until #OwnGui.UpgradeInterfaces:GetChildren() > 0
+                    local unit = OwnGui.UpgradeInterfaces:GetChildren()[1]:WaitForChild("Unit"):WaitForChild("Main"):WaitForChild("UnitFrame"):FindFirstChildOfClass("Frame").Name
 
                     Macro_Data_Write()
                     Macro_Insert(
