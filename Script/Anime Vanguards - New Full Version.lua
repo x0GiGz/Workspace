@@ -839,6 +839,8 @@ else
                 local require_data = require(Data)
                 local unt_data =
                 {
+                    upgradeprice = require_data.Upgrades,
+
                     shinnymodel = tostring(require_data.ShinyModel),
                     model = tostring(require_data.Model),
                     price = tostring(require_data.Price),
@@ -849,6 +851,15 @@ else
                     return unt_data
                 end
             end
+        end
+    end
+
+    local function Upgrade_Price(TexT)
+        if OwnGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text == "Max" then
+            return Unit_Data(TexT).upgradeprice[#Unit_Data(TexT).upgradeprice].Price
+        else
+            local num = game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeLabel.Label.Text:split(" ")[2]:gsub("%[",""):gsub("%]","")
+            return Unit_Data(TexT).upgradeprice[tonumber(num) + 1].Price
         end
     end
 
@@ -882,18 +893,12 @@ else
         end
     end
 
-    local function Money_Write(type)
+    local function Money_Write(idx, type)
         if Configs["Record Type"].Value == "Money" or Configs["Record Type"].Value == "Hybrid" then
             if type == "Upgrade" then
-                local Totals = OwnGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text:split(" ")[2]:split("¥")[1]
-
-                if Totals:find(",") then
-                   Totals = Totals:gsub(",","")
-                end
-
-                return Totals
-            else
-                return Unit_Data(type).price
+                return Upgrade_Price(idx)
+            elseif type == "Place" then
+                return Unit_Data(idx).price
             end
         else
             return 0
@@ -973,7 +978,7 @@ else
                         {
                             ["type"] = "Place",
                             ["unit"] = tostring(unit),
-                            ["money"] = tostring(Money_Write(unit)),
+                            ["money"] = tostring(Money_Write(unit, "Place")),
                             ["time"] = tostring(Time_Write()),
                             ["cframe"] = tostring(v.Position.X..", "..(v.Position.Y + 0.8)..", "..v.Position.Z)
                         }
@@ -988,33 +993,31 @@ else
         function()
             Game.Signals.Upgrade = OwnGui.UpgradeInterfaces.ChildAdded:Connect(
                 function(v)
-                    local Upgrade_Button, Sell_Button, Priority = v:WaitForChild("Stats"):WaitForChild("UpgradeButton"):WaitForChild("Button"), v:WaitForChild("Unit"):WaitForChild("Sell"):WaitForChild("Button"), v:WaitForChild("Unit"):WaitForChild("Priority"):WaitForChild("Button")
-                    Game.Signals[v.Name.."Upgrade"] = Upgrade_Button.InputBegan:Connect(
-                        function(input)
-                            if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Configs["Macro Record"].Value then
-                                if v.Stats.UpgradeButton.Inner.Label.Text ~= "Max" and v.Stats.UpgradeButton:FindFirstChild("Dark") == nil then
-                                    Macro_Data_Write()
-                                    Macro_Insert(
-                                        {
-                                            ["type"] = "Upgrade",
-                                            ["unit"] = tostring(v.Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name),
-                                            ["money"] = tostring(Money_Write("Upgrade")),
-                                            ["time"] = tostring(Time_Write()),
-                                            ["cframe"] = tostring(Unit_CFrame(v.Name))
-                                        }
-                                    )
-                                    Macro_Write()
-                                end
-                            end
-                        end
-                    )
-                    Game.Signals[v.Name.."Sell"] = Sell_Button.InputBegan:Connect(
-                        function(input)
-                            if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Configs["Macro Record"].Value then
+                    local Upgrade_Button, Sell_Button, Priority = v:WaitForChild("Stats"):WaitForChild("UpgradeButton"):WaitForChild("Inner"):WaitForChild("Label"), v:WaitForChild("Unit"):WaitForChild("Sell"):WaitForChild("Button"), v:WaitForChild("Unit"):WaitForChild("Priority"):WaitForChild("Inner"):WaitForChild("Label")
+                    Game.Signals[v.Name.."Upgrade"] = Upgrade_Button:GetPropertyChangedSignal("Text"):Connect(
+                        function()
+                            if Configs["Macro Record"].Value then
                                 Macro_Data_Write()
                                 Macro_Insert(
                                     {
-                                        ["type"] = "Sell",
+                                        ["type"] = "Upgrade",
+                                        ["unit"] = tostring(v.Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name),
+                                        ["money"] = tostring(Money_Write(v.Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name, "Upgrade")),
+                                        ["time"] = tostring(Time_Write()),
+                                        ["cframe"] = tostring(Unit_CFrame(v.Name))
+                                    }
+                                )
+                                Macro_Write()
+                            end
+                        end
+                    )
+                    Game.Signals[v.Name.."Priority"] = Priority:GetPropertyChangedSignal("Text"):Connect(
+                        function()
+                            if Configs["Macro Record"].Value then
+                                Macro_Data_Write()
+                                Macro_Insert(
+                                    {
+                                        ["type"] = "ChangePriority",
                                         ["unit"] = tostring(v.Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name),
                                         ["money"] = "0",
                                         ["time"] = tostring(Time_Write()),
@@ -1025,13 +1028,13 @@ else
                             end
                         end
                     )
-                    Game.Signals[v.Name.."Priority"] = Priority.InputBegan:Connect(
+                    Game.Signals[v.Name.."Sell"] = Sell_Button.InputBegan:Connect(
                         function(input)
                             if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Configs["Macro Record"].Value then
                                 Macro_Data_Write()
                                 Macro_Insert(
                                     {
-                                        ["type"] = "ChangePriority",
+                                        ["type"] = "Sell",
                                         ["unit"] = tostring(v.Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name),
                                         ["money"] = "0",
                                         ["time"] = tostring(Time_Write()),
