@@ -1303,7 +1303,7 @@ else
             while true and wait() do
                 if Loader.Unloaded then break
                 else
-                    if Configs["Auto Lobby Challenge"].Value and (tonumber(os.date("!*t").min) == 30 or tonumber(os.date("!*t").min) == 00) then
+                    if Configs["Auto Lobby Challenge"].Value and (tonumber(os.date("!*t").min) == 30 or tonumber(os.date("!*t").min) == 0) then
                         Return_Lobby()
                         wait(10)
                     end
