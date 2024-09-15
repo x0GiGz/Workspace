@@ -1069,7 +1069,6 @@ else
             Configs["Macro Play"]:OnChanged(
                 function(Value)
                     if Value == true then
-                        wait(0.35)
                         if Macro_Target() == nil then
                             return Loader:Notify({Title = "Error", SubContent = "Select Macro File First", Disable = true, Duration = 5})
                         elseif not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Macro_Target())) then
@@ -1085,19 +1084,18 @@ else
                                 for i = 1, #Macro.Playing do
                                     Macro.Indexs = i
                                     local Data = Macro.Playing[tostring(i)]
-                                    wait(Configs["Macro Delay"].Value)
 
-                                    repeat wait() until (tonumber(Yen()) >= tonumber(Data["money"]) and tonumber(Game_Time()) >= tonumber(Data["time"])) or not Configs["Macro Play"].Value or Loader.Unloaded
                                     if not Configs["Macro Play"].Value or Loader.Unloaded then
                                         break
                                     else
+                                        repeat wait() until (tonumber(Yen()) >= tonumber(Data["money"]) and tonumber(Game_Time()) >= tonumber(Data["time"])) or not Configs["Macro Play"].Value or Loader.Unloaded
                                         if Data["type"] == "Place" then
                                             if not Configs["Macro Play"].Value or Loader.Unloaded then
                                                 break
                                             elseif not Check_Units(Data["unit"]) then
                                                 Loader:Notify({Title = "Error", SubContent = "Invaild Unit On Slot", Disable = true, Duration = 2.5})
                                             else
-                                                repeat wait() until (tonumber(Yen()) >= tonumber(Data["money"]) and tonumber(Game_Time()) >= tonumber(Data["time"])) or not Configs["Macro Play"].Value or Loader.Unloaded
+                                                wait(Configs["Macro Delay"].Value)
                                                 game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer(
                                                     "Render",
                                                     {
@@ -1114,7 +1112,7 @@ else
                                             elseif not Unit_Position(Data["cframe"]) then
                                                 Loader:Notify({Title = "Error", SubContent = "Invaild Unit to Upgrade", Disable = true, Duration = 2.5})
                                             else
-                                                repeat wait() until (tonumber(Yen()) >= tonumber(Data["money"]) and tonumber(Game_Time()) >= tonumber(Data["time"])) or not Configs["Macro Play"].Value or Loader.Unloaded
+                                                wait(Configs["Macro Delay"].Value)
                                                 game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Upgrade", Unit_Position(Data["cframe"]))
                                             end
                                         elseif Data["type"] == "Sell" then
@@ -1123,7 +1121,7 @@ else
                                             elseif not Unit_Position(Data["cframe"]) then
                                                 Loader:Notify({Title = "Error", SubContent = "Invaild Unit to Sell", Disable = true, Duration = 2.5})
                                             else
-                                                repeat wait() until (tonumber(Yen()) >= tonumber(Data["money"]) and tonumber(Game_Time()) >= tonumber(Data["time"])) or not Configs["Macro Play"].Value or Loader.Unloaded
+                                                wait(Configs["Macro Delay"].Value)
                                                 game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Sell", Unit_Position(Data["cframe"]))
                                             end
                                         elseif Data["type"] == "ChangePriority" then
@@ -1132,12 +1130,12 @@ else
                                             elseif not Unit_Position(Data["cframe"]) then
                                                 Loader:Notify({Title = "Error", SubContent = "Invaild Unit to ChangePriority", Disable = true, Duration = 2.5})
                                             else
-                                                repeat wait() until (tonumber(Yen()) >= tonumber(Data["money"]) and tonumber(Game_Time()) >= tonumber(Data["time"])) or not Configs["Macro Play"].Value or Loader.Unloaded
+                                                wait(Configs["Macro Delay"].Value)
                                                 game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("ChangePriority", Unit_Position(Data["cframe"]))
                                             end
                                         end
+                                        wait(0.35)
                                     end
-                                    wait(0.35)
                                     if not Configs["Macro Play"].Value or Loader.Unloaded then
                                         break
                                     end
