@@ -309,6 +309,15 @@ Tabs_Secs[1][4]:AddToggle(
     }
 )
 
+Tabs_Secs[1][4]:AddToggle(
+    "Auto Lobby Challenge",
+    {
+        Title = "Auto Lobby",
+        Description = "Return to the lobby automatically if challenge changed",
+        Default = false
+    }
+)
+
 Tabs_Secs[2][1]:AddToggle(
     "Auto Skip",
     {
@@ -1294,11 +1303,27 @@ else
             while true and wait() do
                 if Loader.Unloaded then break
                 else
+                    if Configs["Auto Lobby Challenge"].Value and (tonumber(os.date("!*t").min) == 30 or tonumber(os.date("!*t").min) == 00) then
+                        Return_Lobby()
+                        wait(10)
+                    end
+                end
+            end
+        end
+    )
+
+    task.spawn(
+        function()
+            while true and wait() do
+                if Loader.Unloaded then break
+                else
                     if Configs["Send Webhook"].Value and OwnGui.EndScreen.Enabled and OwnGui.EndScreen.Container.Visible then
                         wait(0.25)
                         for I, V in next, OwnGui.EndScreen.Container.EndScreen.Main.StageRewards.Main:GetChildren() do
-                            if V:IsA("Frame") then
+                            if V:IsA("Frame") and V.Holder.Main:FindFirstChild("Amount") then
                                 table.insert(Game.Webhook, V.Holder.Main.Amount.Text.." "..V.Name)
+                            elseif V:IsA("Frame") and V.Holder.Main:FindFirstChild("Amount") == nil then
+                                table.insert("x1 "..V.Name)
                             end
                         end
                         local Data = game:GetService("HttpService"):JSONEncode({
