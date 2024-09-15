@@ -736,11 +736,15 @@ if game.PlaceId == 16146832113 then
                         end
                     end
                     else
-                        if Configs["Auto Join Challenge"].Value and not Challenge_Ignore() then wait(Configs["Start Delay"].Value)
-                            game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer("Enter", Challenge_Normal_Lobby())
-                        elseif Story_Lobby() and (Configs["Auto Join Legend Stage"].Value or Configs["Auto Join Normal"].Value or Configs["Auto Join Hights"].Value) then wait(Configs["Start Delay"].Value)
-                            game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer("Enter", Story_Lobby())
+                        pcall(
+                            function()
+                                if Configs["Auto Join Challenge"].Value and not Challenge_Ignore() then wait(Configs["Start Delay"].Value)
+                                game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer("Enter", Challenge_Normal_Lobby())
+                            elseif Story_Lobby() and (Configs["Auto Join Legend Stage"].Value or Configs["Auto Join Normal"].Value or Configs["Auto Join Hights"].Value) then wait(Configs["Start Delay"].Value)
+                                game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer("Enter", Story_Lobby())
+                            end
                         end
+                        )
                     end
                 end
             end
@@ -958,6 +962,9 @@ else
                 if Loader.Unloaded or not Configs["Macro Record"].Value then
                     return
                 else
+                    if #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0 then
+                        game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1]:Destroy()
+                    end
                     repeat wait() until #game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren() > 0
                     local unit = game:GetService("Players").LocalPlayer.PlayerGui.UpgradeInterfaces:GetChildren()[1]:WaitForChild("Unit"):WaitForChild("Main"):WaitForChild("UnitFrame"):FindFirstChildOfClass("Frame").Name
 
@@ -968,7 +975,7 @@ else
                             ["unit"] = tostring(unit),
                             ["money"] = tostring(Money_Write(unit)),
                             ["time"] = tostring(Time_Write()),
-                            ["cframe"] = tostring(v.Position)
+                            ["cframe"] = tostring(v.Position.X..", "..(v.Position.Y + 0.8)..", "..v.Position.Z)
                         }
                     )
                     Macro_Write()
@@ -1155,18 +1162,22 @@ else
             while true and wait() do
                 if Loader.Unloaded then break
                 else
-                    if Configs["Macro Status"].Value then
-                        if Game.Others.Notify1 then
-                            Game.Others.Notify1.Title.Text = "Status : "..Macro.Status
-                            Game.Others.Notify1.SubContentLabel.Text = "Game Time : "..tostring(Game_Time())..Update_Status()
+                    pcall(
+                        function()
+                            if Configs["Macro Status"].Value then
+                                if Game.Others.Notify1 then
+                                    Game.Others.Notify1.Title.Text = "Status : "..Macro.Status
+                                    Game.Others.Notify1.SubContentLabel.Text = "Game Time : "..tostring(Game_Time())..Update_Status()
 
-                            local d, n = string.gsub(Game.Others.Notify1.SubContentLabel.Text, "\n", "")
-                            Game.Others.Notify1.Holder.Size = UDim2.new(1,0,0,(80 + (10.5 * n)))
-                        else
-                            Game.Others.Status1:SetTitle("Status : "..Macro.Status)
-                            Game.Others.Status1:SetDesc("\nGame Time : "..tostring(Game_Time())..Update_Status())
+                                    local d, n = string.gsub(Game.Others.Notify1.SubContentLabel.Text, "\n", "")
+                                    Game.Others.Notify1.Holder.Size = UDim2.new(1,0,0,(80 + (10.5 * n)))
+                                else
+                                    Game.Others.Status1:SetTitle("Status : "..Macro.Status)
+                                    Game.Others.Status1:SetDesc("\nGame Time : "..tostring(Game_Time())..Update_Status())
+                                end
+                            end
                         end
-                    end
+                    )
                 end
             end
         end
