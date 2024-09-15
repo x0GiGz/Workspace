@@ -867,6 +867,17 @@ else
         end
     end
 
+    local function Check_Units(name)
+        for I, V in next, OwnGui.Hotbar.Main.Units:GetChildren() do
+            if V:IsA("Frame") then
+                if V:FindFirstChild("Locked") or V:FindFirstChild("UnitTemplate") == nil then continue end
+                if V.UnitTemplate.Holder.Main.UnitName.Text == name then
+                    return true
+                end
+            end
+        end
+    end
+
     local function Money_Write(type)
         if Configs["Record Type"].Value == "Money" or Configs["Record Type"].Value == "Hybrid" then
             if type == "Upgrade" then
@@ -1076,6 +1087,8 @@ else
                                         if Data["type"] == "Place" then
                                             if not Configs["Macro Play"].Value or Loader.Unloaded then
                                                 break
+                                            elseif not Check_Units(Data["unit"]) then
+                                                Loader:Notify({Title = "Error", SubContent = "Invaild Unit On Slot", Disable = true, Duration = 2.5})
                                             else
                                                 repeat wait() until (tonumber(Yen()) >= tonumber(Data["money"]) and tonumber(Game_Time()) >= tonumber(Data["time"])) or not Configs["Macro Play"].Value or Loader.Unloaded
                                                 game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer(
