@@ -33,7 +33,7 @@ local Tabs_Secs =
 {
     [1] = {Tabs_Main[1]:AddSection("Settings"), Tabs_Main[1]:AddSection("Story"), Tabs_Main[1]:AddSection("Legend Stage"), Tabs_Main[1]:AddSection("Challenge")},
     [2] = {Tabs_Main[2]:AddSection("Game"), Tabs_Main[2]:AddSection("Webhook"), Tabs_Main[2]:AddSection("Misc")},
-    [3] = {Tabs_Main[3]:AddSection("Setting"), Tabs_Main[3]:AddSection("Macro"), Tabs_Main[3]:AddSection("Story"), Tabs_Main[3]:AddSection("Legend Stage"), Tabs_Main[3]:AddSection("Challenge")}
+    [3] = {Tabs_Main[3]:AddSection("Setting"), Tabs_Main[3]:AddSection("Import"), Tabs_Main[3]:AddSection("Macro"), Tabs_Main[3]:AddSection("Story"), Tabs_Main[3]:AddSection("Legend Stage"), Tabs_Main[3]:AddSection("Challenge")}
 }
 
 local Game =
@@ -490,7 +490,36 @@ Tabs_Secs[3][1]:AddButton(
     }
 )
 
-Tabs_Secs[3][2]:AddDropdown(
+Tabs_Secs[3][2]:AddInput(
+    "Import Link",
+    {
+        Title = "Import Link",
+        Placeholder = "Github or Discord Link...",
+        Default = ""
+    }
+)
+
+Tabs_Secs[3][2]:AddInput(
+    "Import Name",
+    {
+        Title = "Import Name",
+        Placeholder = "Import name here...",
+        Default = ""
+    }
+)
+
+Game.Buttons.Import =
+Tabs_Secs[3][2]:AddButton(
+    {
+        Title = "Import Macro File",
+        Description = nil,
+        Callback = function()
+            Import_File()
+        end
+    }
+)
+
+Tabs_Secs[3][3]:AddDropdown(
     "Record Type",
     {
         Title = "Record Type",
@@ -499,7 +528,7 @@ Tabs_Secs[3][2]:AddDropdown(
     }
 )
 
-Tabs_Secs[3][2]:AddToggle(
+Tabs_Secs[3][3]:AddToggle(
     "Macro Record",
     {
         Title = "Record Macro",
@@ -511,7 +540,7 @@ Tabs_Secs[3][2]:AddToggle(
     }
 )
 
-Tabs_Secs[3][2]:AddSlider(
+Tabs_Secs[3][3]:AddSlider(
     "Macro Delay",
     {
         Title = "Macro Delay",
@@ -522,7 +551,7 @@ Tabs_Secs[3][2]:AddSlider(
     }
 )
 
-Tabs_Secs[3][2]:AddToggle(
+Tabs_Secs[3][3]:AddToggle(
     "Macro Play",
     {
         Title = "Play Back Macro",
@@ -531,7 +560,7 @@ Tabs_Secs[3][2]:AddToggle(
 )
 
 for i = 1, #Game.Story_Mode do
-    Tabs_Secs[3][3]:AddDropdown(
+    Tabs_Secs[3][4]:AddDropdown(
         "Story"..Game.Story_Mode[i],
         {
             Title = Game.Story_Mode[i],
@@ -541,7 +570,7 @@ for i = 1, #Game.Story_Mode do
         }
     )
 
-    Tabs_Secs[3][5]:AddDropdown(
+    Tabs_Secs[3][6]:AddDropdown(
         "Challenge"..Game.Story_Mode[i],
         {
             Title = Game.Story_Mode[i],
@@ -553,7 +582,7 @@ for i = 1, #Game.Story_Mode do
 end
 
 for i = 1, #Game.Legend_Stage_Mode do
-    Tabs_Secs[3][4]:AddDropdown(
+    Tabs_Secs[3][5]:AddDropdown(
         "Legend Stage"..Game.Legend_Stage_Mode[i],
         {
             Title = Game.Legend_Stage_Mode[i],
@@ -571,7 +600,7 @@ do
 
     Saveed:SetLibrary(Loader)
     Saveed:SetFolder("CrazyDay/Anime Vanguards/"..game:GetService("Players"):GetUserIdFromNameAsync(game:GetService("Players").LocalPlayer.Name))
-    Saveed:SetIgnoreIndexes({"File Name","Macro Record"})
+    Saveed:SetIgnoreIndexes({"File Name","Macro Record", "Import Name", "Import Link"})
     Saveed:IgnoreThemeSettings()
     Saveed:BuildConfigSection(Tabs_Main[#Tabs_Main])
 
@@ -1397,6 +1426,61 @@ function NavigationGUISelect(Object)
     GuiService.SelectedObject = nil
 end
 
+function Import_File()
+    local passed, error = pcall(
+        function()
+            local file = string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Import Name"].Value)
+            if not isfile then
+                error("The Excutor doesn't Support isfile", 9)
+            elseif not writefile then
+                error("The Excutor doesn't Support writefile", 9)
+            elseif isfile(file) then
+                error("This File is Already Available", 9)
+            elseif not string.find(Configs["Import Link"].Value, "https://cdn.discordapp.com/attachments/") and not string.find(Configs["Import Link"].Value, "https://github.com/") and not string.find(Configs["Import Link"].Value, "https://raw.githubusercontent.com/") then
+                error("Please make sure your link is correct", 9)
+            else
+                local info
+                if string.find(Configs["Import Link"].Value, "https://cdn.discordapp.com/attachments/") then
+                    info = game:HttpGet(Configs["Import Link"].Value)
+                else
+                    if not string.find(Configs["Import Link"].Value, "https://raw.githubusercontent.com/") and string.find(Configs["Import Link"].Value, "https://github.com/") then
+                        info = Configs["Import Link"].Value
+                        info = info:gsub("https://github.com", "https://raw.githubusercontent.com"):gsub("/blob", "")
+                        info = game:HttpGet(info)
+                    else
+                        if string.find(Configs["Import Link"].Value, "https://raw.githubusercontent.com/") then
+                            info = game:HttpGet(Configs["Import Link"].Value)
+                        end
+                    end
+                end
+                if not info then
+                    error("Unable to Concat The Link", 9)
+                elseif not info:find([["Data":{]]) then
+                    error("Data does not match the database", 9)
+                else
+                    SetFile:CheckFile(file, info)
+
+                    Configs["Macro File"]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
+                    for i = 1, #Game.Story_Mode do
+                        Configs["Story"..Game.Story_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
+                        Configs["Challenge"..Game.Story_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
+                    end
+                    for i = 1, #Game.Legend_Stage_Mode do
+                        Configs["Legend Stage"..Game.Legend_Stage_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
+                    end
+                end
+            end
+        end
+    )
+    if passed then
+        Loader:Notify({Title = "Successful Import : "..Configs["Import Name"].Value..".json", Disable = true, Duration = 5})
+        Configs["Import Link"]:SetValue("")
+        Configs["Import Name"]:SetValue("")
+    else
+        Loader:Notify({Title = "Unsuccessful Import : "..tostring(error), Disable = true, Duration = 5})
+    end
+end
+
 function Create_Macro()
     local passed, error = pcall(
         function()
@@ -1496,6 +1580,11 @@ function Update_Lock()
         if Loader.Unloaded then break
         else
             local A, B = Configs, Game.Buttons
+            if (A["Import Link"].Value == "" or A["Import Name"].Value == "") and not B.Import.IsLocked then
+                B.Import:Lock()
+            elseif A["Import Link"].Value ~= "" and A["Import Name"].Value ~= "" and B.Import.IsLocked then
+                B.Import:UnLock()
+            end
             if A["Macro Record"].Value or A["Macro Play"].Value then
                 if not B.Delete.IsLocked then
                     B.Delete:Lock()
