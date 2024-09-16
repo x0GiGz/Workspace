@@ -1351,7 +1351,7 @@ else
                 if Loader.Unloaded then break
                 else
                     if Configs["Send Webhook"].Value and OwnGui.EndScreen.Enabled and OwnGui.EndScreen.Container.Visible then
-                        wait(0.25)
+                        wait(2)
                         for I, V in next, OwnGui.EndScreen.Container.EndScreen.Main.StageRewards.Main:GetChildren() do
                             if V:IsA("Frame") and V.Holder.Main:FindFirstChild("Amount") then
                                 table.insert(Game.Webhook, V.Holder.Main.Amount.Text.." "..V.Name)
