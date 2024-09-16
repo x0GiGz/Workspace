@@ -14,7 +14,7 @@ local Windows = Loader:CreateWindow(
         Theme = "Darker",
         Acrylic = true,
         UpdateDate = "09/16/2024 - 1.1",
-        UpdateLog = "● Add Select Vote Debuff"..SetFile:Space().."● Add Auto Vote Debuff"..SetFile:Space().."● Add Auto Sell Select Units"..SetFile:Space().."● Add Import File"..SetFile:Space().."● Add Export File",
+        UpdateLog = "● Add Select Vote Debuff"..SetFile:Space().."● Add Auto Vote Debuff"..SetFile:Space().."● Add Auto Sell Select Units"..SetFile:Space().."● Add Import File"..SetFile:Space().."● Add Export File"..SetFile:Space().."● Add Paragon Macro Options",
         IconVisual = nil,
         BlackScreen = false,
         MinimizeKey = Enum.KeyCode.LeftAlt
@@ -33,7 +33,7 @@ local Tabs_Secs =
 {
     [1] = {Tabs_Main[1]:AddSection("Settings"), Tabs_Main[1]:AddSection("Story"), Tabs_Main[1]:AddSection("Legend Stage"), Tabs_Main[1]:AddSection("Challenge")},
     [2] = {Tabs_Main[2]:AddSection("Game"), Tabs_Main[2]:AddSection("Webhook"), Tabs_Main[2]:AddSection("Debuff"), Tabs_Main[2]:AddSection("Misc")},
-    [3] = {Tabs_Main[3]:AddSection("Setting"), Tabs_Main[3]:AddSection("Import"), Tabs_Main[3]:AddSection("Macro"), Tabs_Main[3]:AddSection("Story"), Tabs_Main[3]:AddSection("Legend Stage"), Tabs_Main[3]:AddSection("Challenge")}
+    [3] = {Tabs_Main[3]:AddSection("Setting"), Tabs_Main[3]:AddSection("Import"), Tabs_Main[3]:AddSection("Macro"), Tabs_Main[3]:AddSection("Story"), Tabs_Main[3]:AddSection("Legend Stage"), Tabs_Main[3]:AddSection("Challenge"), Tabs_Main[3]:AddSection("Paragon")}
 }
 
 local Game =
@@ -662,6 +662,16 @@ for i = 1, #Game.Story_Mode do
             Default = nil
         }
     )
+
+    Tabs_Secs[3][7]:AddDropdown(
+        "Paragon"..Game.Story_Mode[i],
+        {
+            Title = Game.Story_Mode[i],
+            Values = SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"),
+            AllowNull = true,
+            Default = nil
+        }
+    )
 end
 
 for i = 1, #Game.Legend_Stage_Mode do
@@ -944,6 +954,8 @@ else
     local function Stage_Type()
         if OwnGui.Guides.List.StageInfo.StageType.Text:match("Challenge") then
             return "Challenge"
+        elseif OwnGui.Guides.List.StageInfo.StageName.Text:match("Paragon") then
+            return "Paragon"
         else
             return OwnGui.Guides.List.StageInfo.StageType.Text
         end
