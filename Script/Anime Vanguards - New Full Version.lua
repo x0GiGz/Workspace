@@ -8,13 +8,13 @@ local Configs = Loader.Options
 local Windows = Loader:CreateWindow(
     {
         Title = "Anime Vanguards",
-        SubTitle = "1.0 [YT @crazyday3693]",
+        SubTitle = "1.1 [YT @crazyday3693]",
         TabWidth = 130,
         Size = UDim2.fromOffset(540, 440),
         Theme = "Darker",
         Acrylic = true,
-        UpdateDate = "09/14/2024 - 1.0",
-        UpdateLog = "● Release",
+        UpdateDate = "09/16/2024 - 1.1",
+        UpdateLog = "● Add Select Vote Debuff"..SetFile:Space().."● Add Auto Vote Debuff"..SetFile:Space().."● Add Auto Sell Select Units"..SetFile:Space().."● Add Import File"..SetFile:Space().."● Add Export File",
         IconVisual = nil,
         BlackScreen = false,
         MinimizeKey = Enum.KeyCode.LeftAlt
@@ -32,7 +32,7 @@ local Tabs_Main =
 local Tabs_Secs =
 {
     [1] = {Tabs_Main[1]:AddSection("Settings"), Tabs_Main[1]:AddSection("Story"), Tabs_Main[1]:AddSection("Legend Stage"), Tabs_Main[1]:AddSection("Challenge")},
-    [2] = {Tabs_Main[2]:AddSection("Game"), Tabs_Main[2]:AddSection("Webhook"), Tabs_Main[2]:AddSection("Misc")},
+    [2] = {Tabs_Main[2]:AddSection("Game"), Tabs_Main[2]:AddSection("Webhook"), Tabs_Main[2]:AddSection("Debuff"), Tabs_Main[2]:AddSection("Misc")},
     [3] = {Tabs_Main[3]:AddSection("Setting"), Tabs_Main[3]:AddSection("Import"), Tabs_Main[3]:AddSection("Macro"), Tabs_Main[3]:AddSection("Story"), Tabs_Main[3]:AddSection("Legend Stage"), Tabs_Main[3]:AddSection("Challenge")}
 }
 
@@ -54,6 +54,7 @@ local Game =
     Buttons = {},
     Signals = {},
     Others = {},
+    Units = {}
 }
 
 local Macro =
@@ -108,6 +109,18 @@ task.spawn(
 
         for Game_Challenge_Rewards, _ in next, require(game:GetService("ReplicatedStorage").Modules.Data.ItemsData.MiscItems) do
             table.insert(Game.Challenge_Rewards, Game_Challenge_Rewards)
+        end
+
+        if game.PlaceId == 16146832113 then
+            for I = 1, 6 do
+                if game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Units[tostring(I)]:FindFirstChild("Locked") or game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Units[tostring(I)]:FindFirstChild("UnitTemplate") == nil then continue end
+                table.insert(Game.Units, game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Units[tostring(I)].UnitTemplate.Holder.Main.UnitName.Text)
+            end
+        else
+            for I = 1, 6 do
+                if game:GetService("Players").LocalPlayer.PlayerGui.Hotbar.Main.Units[tostring(I)]:FindFirstChild("Locked") or game:GetService("Players").LocalPlayer.PlayerGui.Hotbar.Main.Units[tostring(I)]:FindFirstChild("UnitTemplate") == nil then continue end
+                table.insert(Game.Units, game:GetService("Players").LocalPlayer.PlayerGui.Hotbar.Main.Units[tostring(I)].UnitTemplate.Holder.Main.UnitName.Text)
+            end
         end
 
         do
@@ -381,7 +394,57 @@ Tabs_Secs[2][2]:AddToggle(
     }
 )
 
-Tabs_Secs[2][3]:AddSlider(
+Tabs_Secs[2][3]:AddDropdown(
+    "Debuff Priority 1",
+    {
+        Title = "Select Priority 1",
+        Values = Game.Challenge_Debuff,
+        Multi = true,
+        Default = {}
+    }
+)
+
+Tabs_Secs[2][3]:AddDropdown(
+    "Debuff Priority 2",
+    {
+        Title = "Select Priority 2",
+        Values = Game.Challenge_Debuff,
+        Multi = true,
+        Default = {}
+    }
+)
+
+Tabs_Secs[2][3]:AddDropdown(
+    "Debuff Priority 3",
+    {
+        Title = "Select Priority 3",
+        Values = Game.Challenge_Debuff,
+        Multi = true,
+        Default = {}
+    }
+)
+
+Tabs_Secs[2][3]:AddToggle(
+    "Auto Vote Debuff",
+    {
+        Title = "Auto Vote Debuff",
+        Description = " Vote the select debuff by priority automatically",
+        Default = false
+    }
+)
+
+
+Tabs_Secs[2][4]:AddDropdown(
+    "Select Units",
+    {
+        Title = "Select Units",
+        Values = Game.Units,
+        Multi = true,
+        Default = {}
+    }
+)
+
+Tabs_Secs[2][4]:AddSlider(
     "Select Wave",
     {
         Title = "Select Wave",
@@ -392,11 +455,20 @@ Tabs_Secs[2][3]:AddSlider(
     }
 )
 
-Tabs_Secs[2][3]:AddToggle(
+Tabs_Secs[2][4]:AddToggle(
     "Auto Leave Select Wave",
     {
         Title = "Auto Leave",
-        Description = "Automatically teleports to the lobby if select wave",
+        Description = "Return to the lobby on select wave automatically",
+        Default = false
+    }
+)
+
+Tabs_Secs[2][4]:AddToggle(
+    "Auto Sell Select Units",
+    {
+        Title = "Auto Sell",
+        Description = " Sell the select units on select wave automatically",
         Default = false
     }
 )
@@ -486,6 +558,17 @@ Tabs_Secs[3][1]:AddButton(
                     }
                 }
             )
+        end
+    }
+)
+
+Game.Buttons.Export =
+Tabs_Secs[3][1]:AddButton(
+    {
+        Title = "Export Select Macro",
+        Description = "Export the Selected Macro",
+        Callback = function()
+            Export_Macro()
         end
     }
 )
@@ -696,6 +779,43 @@ if game.PlaceId == 16146832113 then
         end
     end
 
+    local function Units_On_Slots()
+        local Grabs = {}
+        for I = 1, 6 do
+            if game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Units[tostring(I)]:FindFirstChild("Locked") or game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Units[tostring(I)]:FindFirstChild("UnitTemplate") == nil then continue end
+            table.insert(Grabs, game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Units[tostring(I)].UnitTemplate.Holder.Main.UnitName.Text)
+        end
+        return Grabs
+    end
+
+    task.spawn(
+        function()
+            for I = 1, 6 do
+                if game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Units[tostring(I)]:FindFirstChild("Locked") then continue end
+                if not Game.Signals[tostring(I).."Added"] then
+                    Game.Signals[tostring(I).."Added"] = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Units[tostring(I)].ChildAdded:Connect(
+                        function(V)
+                            if V.Name == "UnitTemplate" and not Loader.Unloaded then
+                                Configs["Select Units"]:SetValues(Units_On_Slots())
+                                Configs["Select Units"]:SetValue({})
+                            end
+                        end
+                    )
+                end
+                if not Game.Signals[tostring(I).."Remove"] then
+                    Game.Signals[tostring(I).."Remove"] = game:GetService("Players").LocalPlayer.PlayerGui.HUD.Main.Units[tostring(I)].ChildRemoved:Connect(
+                        function(V)
+                            if V.Name == "UnitTemplate" and not Loader.Unloaded then
+                                Configs["Select Units"]:SetValues(Units_On_Slots())
+                                Configs["Select Units"]:SetValue({})
+                            end
+                        end
+                    )
+                end
+            end
+        end
+    )
+
     task.spawn(
         function()
             while true and wait() do
@@ -842,13 +962,7 @@ else
             Macro.Value.Data.World = tostring(Stage_Name())
         end
         if not Macro.Value.Data.Units then
-            Macro.Value.Data.Units = {}
-            for I, V in next, OwnGui.Hotbar.Main.Units:GetChildren() do
-                if V:IsA("Frame") then
-                    if V:FindFirstChild("Locked") or V:FindFirstChild("UnitTemplate") == nil then continue end
-                    table.insert(Macro.Value.Data.Units, V.UnitTemplate.Holder.Main.UnitName.Text)
-                end
-            end
+            Macro.Value.Data.Units = Game.Units
         end
     end
 
@@ -1038,7 +1152,7 @@ else
                     local Upgrade_Button, Sell_Button, Priority = v:WaitForChild("Stats"):WaitForChild("UpgradeButton"):WaitForChild("Inner"):WaitForChild("Label"), v:WaitForChild("Unit"):WaitForChild("Sell"):WaitForChild("Button"), v:WaitForChild("Unit"):WaitForChild("Priority"):WaitForChild("Inner"):WaitForChild("Label")
                     Game.Signals[v.Name.."Upgrade"] = Upgrade_Button:GetPropertyChangedSignal("Text"):Connect(
                         function()
-                            if Configs["Macro Record"].Value then
+                            if Configs["Macro Record"].Value and not Loader.Unloaded then
                                 Macro_Data_Write()
                                 Macro_Insert(
                                     {
@@ -1055,7 +1169,7 @@ else
                     )
                     Game.Signals[v.Name.."Priority"] = Priority:GetPropertyChangedSignal("Text"):Connect(
                         function()
-                            if Configs["Macro Record"].Value then
+                            if Configs["Macro Record"].Value and not Loader.Unloaded then
                                 Macro_Data_Write()
                                 Macro_Insert(
                                     {
@@ -1072,7 +1186,7 @@ else
                     )
                     Game.Signals[v.Name.."Sell"] = Sell_Button.InputBegan:Connect(
                         function(input)
-                            if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Configs["Macro Record"].Value then
+                            if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Configs["Macro Record"].Value and not Loader.Unloaded then
                                 Macro_Data_Write()
                                 Macro_Insert(
                                     {
@@ -1113,7 +1227,7 @@ else
         function()
             Configs["Macro Play"]:OnChanged(
                 function(Value)
-                    if Value == true then
+                    if Value == true and not Loader.Unloaded then
                         if Macro_Target() == nil then
                             return Loader:Notify({Title = "Error", SubContent = "Select Macro File First", Disable = true, Duration = 5})
                         elseif not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Macro_Target())) then
@@ -1270,12 +1384,106 @@ else
         end
     )
 
+    local function Debuff_Priority_1()
+        if #Configs["Debuff Priority 1"].Tables > 0 then
+            for I, V in next, OwnGui.Frames.Modifiers.Main:GetChildren() do
+                if table.find(Configs["Debuff Priority 1"].Tables, V.Name) then
+                    if V:FindFirstChild("Main") and V.Main:FindFirstChild("Button") then
+                        NavigationGUISelect(V.Main.Button)
+                    end
+                end
+            end
+        end
+    end
+
+    local function Debuff_Priority_2()
+        if #Configs["Debuff Priority 2"].Tables > 0 then
+            for I, V in next, OwnGui.Frames.Modifiers.Main:GetChildren() do
+                if table.find(Configs["Debuff Priority 2"].Tables, V.Name) then
+                    if V:FindFirstChild("Main") and V.Main:FindFirstChild("Button") then
+                        NavigationGUISelect(V.Main.Button)
+                    end
+                end
+            end
+        end
+    end
+
+    local function Debuff_Priority_3()
+        if #Configs["Debuff Priority 3"].Tables > 0 then
+            for I, V in next, OwnGui.Frames.Modifiers.Main:GetChildren() do
+                if table.find(Configs["Debuff Priority 3"].Tables, V.Name) then
+                    if V:FindFirstChild("Main") and V.Main:FindFirstChild("Button") then
+                        NavigationGUISelect(V.Main.Button)
+                    end
+                end
+            end
+        end
+    end
+
     task.spawn(
         function()
             while true and wait() do
                 if Loader.Unloaded then break
                 else
-                    if Configs["Auto Skip"].Value and OwnGui:FindFirstChild("SkipWave") then
+                    pcall(
+                        function()
+                            if Configs["Auto Vote Debuff"].Value and #OwnGui.Frames.Modifiers.Main:GetChildren() >= 3 then
+                                if #Configs["Debuff Priority 1"].Tables > 0 then
+                                    wait(3.5)
+                                    Debuff_Priority_1()
+                                end
+                                if #Configs["Debuff Priority 2"].Tables > 0 then
+                                    wait(3.5)
+                                    Debuff_Priority_1()
+                                    Debuff_Priority_2()
+                                end
+                                if #Configs["Debuff Priority 3"].Tables > 0 then
+                                    wait(3.5)
+                                    Debuff_Priority_1()
+                                    Debuff_Priority_2()
+                                    Debuff_Priority_3()
+                                end
+                            end
+                        end
+                    )
+                end
+            end
+        end
+    )
+
+    task.spawn(
+        function()
+            while true and wait() do
+                if Loader.Unloaded then break
+                else
+                    if tonumber(OwnGui.HUD.Map.WavesAmount.Text) >= tonumber(Configs["Select Wave"].Value) and Configs["Auto Sell Select Units"].Value and #Configs["Select Units"].Tables > 0 then
+                        if OwnGui:FindFirstChild("UnitManager") == nil then
+                            NavigationGUISelect(OwnGui.Guides.List.StageInfo.Buttons.UnitManager.Button)
+                        else
+                            pcall(
+                                function()
+                                    if #OwnGui.UnitManager.Holder.Main.List:GetChildren() >= 3 then
+                                        for I, V in next, OwnGui.UnitManager.Holder.Main.List:GetChildren() do
+                                            if V:IsA("Frame") and table.find(Configs["Select Units"].Tables, V.Unit:FindFirstChildOfClass("Frame").Name) then
+                                                game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Sell", V.Name)
+                                            end
+                                        end
+                                    end
+                                end
+                            )
+                        end
+                    end
+                end
+            end
+        end
+    )
+
+    task.spawn(
+        function()
+            while true and wait() do
+                if Loader.Unloaded then break
+                else
+                    if Configs["Auto Skip"].Value and OwnGui:FindFirstChild("SkipWave") and #OwnGui.Frames.Modifiers.Main:GetChildren() < 3 then
                         game:GetService("ReplicatedStorage").Networking.SkipWaveEvent:FireServer("Skip")
                         wait(5)
                     end
@@ -1550,6 +1758,30 @@ function Delete_Macro()
     end
 end
 
+function Export_Macro()
+    local passed, error = pcall(
+        function()
+            local link = string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Macro File"].Value)
+
+            if not isfile then
+                error("The Excutor doesn't Support isfile", 9)
+            elseif not readfile then
+                error("The Excutor doesn't Support readfile", 9)
+            elseif not isfile(link) then
+                error("The file cannot be found", 9)
+            else
+                local A = readfile(link)
+                setclipboard(tostring(A))
+            end
+        end
+    )
+    if passed then
+        Loader:Notify({Title = "Successful Export : "..Configs["Macro File"].Value..".json Just Copy to Your Clipboard", Disable = true, Duration = 5})
+    else
+        Loader:Notify({Title = "Unsuccessful Export : "..tostring(error), Disable = true, Duration = 5})
+    end
+end
+
 function Equip_Macro()
     if not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Macro File"].Value)) then
        return Loader:Notify({Title = "Error", SubContent = "The file cannot be found", Duration = 5, Disable = true})
@@ -1592,6 +1824,9 @@ function Update_Lock()
                 if not B.Create.IsLocked then
                     B.Create:Lock()
                 end
+                if not B.Export.IsLocked then
+                    B.Export:Lock()
+                end
 
                 if not A["File Name"].IsLocked then
                     A["File Name"]:Lock()
@@ -1624,6 +1859,12 @@ function Update_Lock()
                    B.Delete:Lock()
                 elseif A["Macro File"].Value ~= nil and B.Delete.IsLocked then
                    B.Delete:UnLock()
+                end
+
+                if A["Macro File"].Value == nil and not B.Export.IsLocked then
+                    B.Export:Lock()
+                elseif A["Macro File"].Value ~= nil and B.Export.IsLocked then
+                    B.Export:UnLock()
                 end
 
                 if A["File Name"].Value == "" and not B.Create.IsLocked then
