@@ -1361,12 +1361,21 @@ else
                         function()
                             local Visual = OwnGui.EndScreen
                             if Configs["Auto Leave"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Leave") and Visual.Container.EndScreen:FindFirstChild("Leave").Visible then
+                                if Configs["Send Webhook"].Value then
+                                    wait(2)
+                                end
                                 NavigationGUISelect(Visual.Container.EndScreen.Leave.Button)
                                 wait(3)
                             elseif Configs["Auto Next"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Next") and Visual.Container.EndScreen:FindFirstChild("Next").Visible then
+                                if Configs["Send Webhook"].Value then
+                                    wait(2)
+                                end
                                 NavigationGUISelect(Visual.Container.EndScreen.Next.Button)
                                 wait(3)
                             elseif Configs["Auto Retry"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Retry") and Visual.Container.EndScreen:FindFirstChild("Retry").Visible then
+                                if Configs["Send Webhook"].Value then
+                                    wait(2)
+                                end
                                 NavigationGUISelect(Visual.Container.EndScreen.Retry.Button)
                                 wait(3)
                             end
