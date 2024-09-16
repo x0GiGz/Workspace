@@ -793,7 +793,11 @@ else
     end
 
     local function Stage_Type()
-        return OwnGui.Guides.List.StageInfo.StageType.Text
+        if OwnGui.Guides.List.StageInfo.StageType.Text:match("Challenge") then
+            return "Challenge"
+        else
+            return OwnGui.Guides.List.StageInfo.StageType.Text
+        end
     end
 
     local function End_Stage()
