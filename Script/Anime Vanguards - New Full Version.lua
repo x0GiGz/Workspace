@@ -1770,10 +1770,14 @@ function Import_File()
                     Configs["Macro File"]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
                     for i = 1, #Game.Story_Mode do
                         Configs["Story"..Game.Story_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
+                        Configs["Paragon"..Game.Story_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
                         Configs["Challenge"..Game.Story_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
 
                         if Configs["Story"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Story"..Game.Story_Mode[i]].Value)) then
                            Configs["Story"..Game.Story_Mode[i]]:SetValue(nil)
+                        end
+                        if Configs["Paragon"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Paragon"..Game.Story_Mode[i]].Value)) then
+                           Configs["Paragon"..Game.Story_Mode[i]]:SetValue(nil)
                         end
                         if Configs["Challenge"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Challenge"..Game.Story_Mode[i]].Value)) then
                            Configs["Challenge"..Game.Story_Mode[i]]:SetValue(nil)
@@ -1818,10 +1822,14 @@ function Create_Macro()
 
                 for i = 1, #Game.Story_Mode do
                     Configs["Story"..Game.Story_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
+                    Configs["Paragon"..Game.Story_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
                     Configs["Challenge"..Game.Story_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
 
                     if Configs["Story"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Story"..Game.Story_Mode[i]].Value)) then
                        Configs["Story"..Game.Story_Mode[i]]:SetValue(nil)
+                    end
+                    if Configs["Paragon"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Paragon"..Game.Story_Mode[i]].Value)) then
+                       Configs["Paragon"..Game.Story_Mode[i]]:SetValue(nil)
                     end
                     if Configs["Challenge"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Challenge"..Game.Story_Mode[i]].Value)) then
                        Configs["Challenge"..Game.Story_Mode[i]]:SetValue(nil)
@@ -1866,10 +1874,14 @@ function Delete_Macro()
 
                 for i = 1, #Game.Story_Mode do
                     Configs["Story"..Game.Story_Mode[i]]:SetValues(list)
+                    Configs["Paragon"..Game.Story_Mode[i]]:SetValues(list)
                     Configs["Challenge"..Game.Story_Mode[i]]:SetValues(list)
 
                     if Configs["Story"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Story"..Game.Story_Mode[i]].Value)) then
                        Configs["Story"..Game.Story_Mode[i]]:SetValue(nil)
+                    end
+                    if Configs["Paragon"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Paragon"..Game.Story_Mode[i]].Value)) then
+                       Configs["Paragon"..Game.Story_Mode[i]]:SetValue(nil)
                     end
                     if Configs["Challenge"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Challenge"..Game.Story_Mode[i]].Value)) then
                        Configs["Challenge"..Game.Story_Mode[i]]:SetValue(nil)
