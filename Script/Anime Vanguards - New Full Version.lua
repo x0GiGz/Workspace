@@ -4,6 +4,7 @@ local Loader = loadstring(game:HttpGet("https://raw.githubusercontent.com/x0GiGz
 local Saveed = loadstring(game:HttpGet("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Gui/fluent%20save%20config.lua"))()
 local Setting = loadstring(game:HttpGet("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Gui/fluent%20interfaces.lua"))()
 local SetFile = loadstring(game:HttpGet("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Function/filehelper.lua"))()
+local MiscFnc = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Function/ohaux.lua"))()
 local Configs = Loader.Options
 local Windows = Loader:CreateWindow(
     {
@@ -1041,7 +1042,6 @@ else
     end
 
     local function Units_Active(idx)
-        local path = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Function/ohaux.lua"))()
         local script_path = game:GetService("StarterPlayer").Modules.Gameplay.UnitManager.UnitManagerHandler
         local closure_name = "ShowUnitManager"
         local upvalue_index = 3
@@ -1054,7 +1054,7 @@ else
             [7] = "script"
         }
 
-        local closure = path.searchClosure(script_path, closure_name, upvalue_index, closure_constants)
+        local closure = MiscFnc.searchClosure(script_path, closure_name, upvalue_index, closure_constants)
         local element_index = "GetAllPlacedUnits"
         for _ , data in next, getupvalues(debug.getupvalue(closure, upvalue_index)[element_index]) do
             if typeof(data) == "table" then
@@ -1557,7 +1557,7 @@ else
                             [7] = "script"
                         }
 
-                        local closure = path.searchClosure(script_path, closure_name, upvalue_index, closure_constants)
+                        local closure = MiscFnc.searchClosure(script_path, closure_name, upvalue_index, closure_constants)
                         local element_index = "GetAllPlacedUnits"
                         for _ , data in next, getupvalues(debug.getupvalue(closure, upvalue_index)[element_index]) do
                             if typeof(data) == "table" then
