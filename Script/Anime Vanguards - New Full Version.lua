@@ -1477,6 +1477,7 @@ else
                 if table.find(Configs["Debuff Priority 1"].Tables, V.Name) then
                     if V:FindFirstChild("Main") and V.Main:FindFirstChild("Button") then
                         NavigationGUISelect(V.Main.Button)
+                        repeat task.wait() until not V.Parent or Loader.Unloaded
                     end
                 end
             end
@@ -1485,10 +1486,13 @@ else
 
     local function Debuff_Priority_2()
         if #Configs["Debuff Priority 2"].Tables > 0 then
+            Debuff_Priority_1()
             for I, V in next, OwnGui.Frames.Modifiers.Main:GetChildren() do
                 if table.find(Configs["Debuff Priority 2"].Tables, V.Name) then
                     if V:FindFirstChild("Main") and V.Main:FindFirstChild("Button") then
+                        Debuff_Priority_1()
                         NavigationGUISelect(V.Main.Button)
+                        repeat task.wait() until not V.Parent or Loader.Unloaded
                     end
                 end
             end
@@ -1497,10 +1501,15 @@ else
 
     local function Debuff_Priority_3()
         if #Configs["Debuff Priority 3"].Tables > 0 then
+            Debuff_Priority_1()
+            Debuff_Priority_2()
             for I, V in next, OwnGui.Frames.Modifiers.Main:GetChildren() do
                 if table.find(Configs["Debuff Priority 3"].Tables, V.Name) then
                     if V:FindFirstChild("Main") and V.Main:FindFirstChild("Button") then
+                        Debuff_Priority_1()
+                        Debuff_Priority_2()
                         NavigationGUISelect(V.Main.Button)
+                        repeat task.wait() until not V.Parent or Loader.Unloaded
                     end
                 end
             end
@@ -1515,21 +1524,14 @@ else
                     pcall(
                         function()
                             if Configs["Auto Vote Debuff"].Value and #OwnGui.Frames.Modifiers.Main:GetChildren() >= 3 then
-                                if #Configs["Debuff Priority 1"].Tables > 0 then
-                                    wait(3.5)
-                                    Debuff_Priority_1()
-                                end
-                                if #Configs["Debuff Priority 2"].Tables > 0 then
-                                    wait(3.5)
-                                    Debuff_Priority_1()
-                                    Debuff_Priority_2()
-                                end
-                                if #Configs["Debuff Priority 3"].Tables > 0 then
-                                    wait(3.5)
+                                repeat
                                     Debuff_Priority_1()
                                     Debuff_Priority_2()
                                     Debuff_Priority_3()
-                                end
+                                task.wait(0.475)
+                                until not Configs["Auto Vote Debuff"].Value or #OwnGui.Frames.Modifiers.Main:GetChildren() < 3 or Loader.Unloaded
+                                game:GetService("GuiService").GuiNavigationEnabled = false
+                                game:GetService("GuiService").SelectedObject = nil
                             end
                         end
                     )
