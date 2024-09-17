@@ -1771,9 +1771,20 @@ function Import_File()
                     for i = 1, #Game.Story_Mode do
                         Configs["Story"..Game.Story_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
                         Configs["Challenge"..Game.Story_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
+
+                        if Configs["Story"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Story"..Game.Story_Mode[i]].Value)) then
+                           Configs["Story"..Game.Story_Mode[i]]:SetValue(nil)
+                        end
+                        if Configs["Challenge"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Challenge"..Game.Story_Mode[i]].Value)) then
+                           Configs["Challenge"..Game.Story_Mode[i]]:SetValue(nil)
+                        end
                     end
                     for i = 1, #Game.Legend_Stage_Mode do
                         Configs["Legend Stage"..Game.Legend_Stage_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
+
+                        if Configs["Legend Stage"..Game.Legend_Stage_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Legend Stage"..Game.Legend_Stage_Mode[i]].Value)) then
+                           Configs["Legend Stage"..Game.Legend_Stage_Mode[i]]:SetValue(nil)
+                        end
                     end
                 end
             end
@@ -1804,12 +1815,24 @@ function Create_Macro()
 
                 Configs["Macro File"]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
                 Configs["Macro File"]:SetValue(Configs["File Name"].Value)
+
                 for i = 1, #Game.Story_Mode do
                     Configs["Story"..Game.Story_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
                     Configs["Challenge"..Game.Story_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
+
+                    if Configs["Story"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Story"..Game.Story_Mode[i]].Value)) then
+                       Configs["Story"..Game.Story_Mode[i]]:SetValue(nil)
+                    end
+                    if Configs["Challenge"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Challenge"..Game.Story_Mode[i]].Value)) then
+                       Configs["Challenge"..Game.Story_Mode[i]]:SetValue(nil)
+                    end
                 end
                 for i = 1, #Game.Legend_Stage_Mode do
                     Configs["Legend Stage"..Game.Legend_Stage_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
+
+                    if Configs["Legend Stage"..Game.Legend_Stage_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Legend Stage"..Game.Legend_Stage_Mode[i]].Value)) then
+                       Configs["Legend Stage"..Game.Legend_Stage_Mode[i]]:SetValue(nil)
+                    end
                 end
             end
         end
@@ -1840,12 +1863,24 @@ function Delete_Macro()
 
                 Configs["Macro File"]:SetValues(list)
                 Configs["Macro File"]:SetValue(#list > 0 and list[#list] or nil)
+
                 for i = 1, #Game.Story_Mode do
                     Configs["Story"..Game.Story_Mode[i]]:SetValues(list)
                     Configs["Challenge"..Game.Story_Mode[i]]:SetValues(list)
+
+                    if Configs["Story"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Story"..Game.Story_Mode[i]].Value)) then
+                       Configs["Story"..Game.Story_Mode[i]]:SetValue(nil)
+                    end
+                    if Configs["Challenge"..Game.Story_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Challenge"..Game.Story_Mode[i]].Value)) then
+                       Configs["Challenge"..Game.Story_Mode[i]]:SetValue(nil)
+                    end
                 end
                 for i = 1, #Game.Legend_Stage_Mode do
                     Configs["Legend Stage"..Game.Legend_Stage_Mode[i]]:SetValues(list)
+
+                    if Configs["Legend Stage"..Game.Legend_Stage_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Legend Stage"..Game.Legend_Stage_Mode[i]].Value)) then
+                       Configs["Legend Stage"..Game.Legend_Stage_Mode[i]]:SetValue(nil)
+                    end
                 end
             end
         end
