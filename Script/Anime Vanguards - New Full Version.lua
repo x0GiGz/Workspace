@@ -1002,7 +1002,7 @@ else
 
     local function Unit_Data(TexT)
         for _, Data in next, game:GetService("ReplicatedStorage").Modules.Data.Entities.UnitsData:GetDescendants() do
-            if Data.ClassName == "ModuleScript" then
+            if Data.ClassName == "ModuleScript" and (Data.Name == TexT or Data.Name:match(TexT)) then
                 local require_data = require(Data)
                 local unt_data =
                 {
@@ -1176,15 +1176,16 @@ else
                 else
                     if Units_Active(v.Name) then
                         Macro_Data_Write()
+                        local unit = Units_Active(v.Name)
 
                         Macro_Insert(
                             {
                                 ["type"] = "Place",
-                                ["unit"] = Units_Active(v.Name).name,
-                                ["money"] = tostring(Money_Write(Units_Active(v.Name).name, "Place")),
+                                ["unit"] = unit.name,
+                                ["money"] = tostring(Money_Write(unit.name, "Place")),
                                 ["time"] = tostring(Time_Write()),
-                                ["cframe"] = Units_Active(v.Name).position,
-                                ["rotation"] = Units_Active(v.Name).rotation
+                                ["cframe"] = unit.position,
+                                ["rotation"] = unit.rotation
                             }
                         )
                         Macro_Write()
