@@ -8,13 +8,13 @@ local Configs = Loader.Options
 local Windows = Loader:CreateWindow(
     {
         Title = "Anime Vanguards",
-        SubTitle = "1.2 [YT @crazyday3693]",
+        SubTitle = "1.3 [YT @crazyday3693]",
         TabWidth = 130,
         Size = UDim2.fromOffset(540, 440),
         Theme = "Darker",
         Acrylic = true,
-        UpdateDate = "09/17/2024 - 1.2",
-        UpdateLog = "● More Accurate Macro"..SetFile:Space().."● Fix Auto Sell",
+        UpdateDate = "09/17/2024 - 1.3",
+        UpdateLog = "● Fixed Challenge Bugs"..SetFile:Space().."● Added Not Ignore if Reroll\n\n",
         IconVisual = nil,
         BlackScreen = false,
         MinimizeKey = Enum.KeyCode.LeftAlt
@@ -39,6 +39,12 @@ local Tabs_Secs =
 local Game =
 {
     Time = tick(),
+
+    Challenge_Changed = false,
+    Cannot_Challenge = false,
+    Banner_Changed = false,
+    Cannot_Retry = false,
+    Cannot_Next = false,
 
     Story_Mode = {},
     Story_Acts = {},
@@ -284,9 +290,9 @@ Tabs_Secs[1][3]:AddToggle(
 )
 
 Tabs_Secs[1][4]:AddDropdown(
-    "Ignore Challegne World",
+    "Ignore Challenge World",
     {
-        Title = "Ignore Challegne World",
+        Title = "Ignore Challenge World",
         Values = Game.Story_Mode,
         Multi = true,
         Default = {}
@@ -294,9 +300,9 @@ Tabs_Secs[1][4]:AddDropdown(
 )
 
 Tabs_Secs[1][4]:AddDropdown(
-    "Ignore Challegne Debuff",
+    "Ignore Challenge Debuff",
     {
-        Title = "Ignore Challegne Debuff",
+        Title = "Ignore Challenge Debuff",
         Values = Game.Challenge_Debuff,
         Multi = true,
         Default = {}
@@ -304,9 +310,9 @@ Tabs_Secs[1][4]:AddDropdown(
 )
 
 Tabs_Secs[1][4]:AddDropdown(
-    "Ignore Challegne Rewards",
+    "Ignore Challenge Rewards",
     {
-        Title = "Ignore Challegne Rewards",
+        Title = "Ignore Challenge  Rewards",
         Values = Game.Challenge_Rewards,
         Multi = true,
         Default = {}
@@ -323,10 +329,19 @@ Tabs_Secs[1][4]:AddToggle(
 )
 
 Tabs_Secs[1][4]:AddToggle(
+    "Not Ignore if Reroll",
+    {
+        Title = "Not Ignore if Reroll",
+        Description = "Allow you to join the challenge even ignore challenge rewards, Enable with Auto Join Challenges",
+        Default = false
+    }
+)
+
+Tabs_Secs[1][4]:AddToggle(
     "Auto Lobby Challenge",
     {
         Title = "Auto Lobby",
-        Description = "Return to the lobby automatically if challenge changed",
+        Description = "Return to the lobby if challenge changed automatically",
         Default = false
     }
 )
@@ -734,14 +749,17 @@ if game.PlaceId == 16146832113 then
     end
 
     local function Challenge_Ignore()
-        if #Configs["Ignore Challegne Rewards"].Tables > 0 then
-            for I = 1, #Configs["Ignore Challegne Rewards"].Tables do
-                if Challenge_Normal_Lobby().LobbyBanner.Banner.Main.ChallengeInterface.Background.Rewards:FindFirstChild(Configs["Ignore Challegne Rewards"].Tables[I]) then
-                    return true
+        if #Configs["Ignore Challenge Rewards"].Tables > 0 then
+            if Configs["Not Ignore if Reroll"] and Challenge_Normal_Lobby().LobbyBanner.Banner.Main.ChallengeInterface.Background.Rewards:FindFirstChild("TraitRerolls") then
+            else
+                for I = 1, #Configs["Ignore Challenge Rewards"].Tables do
+                    if Challenge_Normal_Lobby().LobbyBanner.Banner.Main.ChallengeInterface.Background.Rewards:FindFirstChild(Configs["Ignore Challenge Rewards"].Tables[I]) then
+                        return true
+                    end
                 end
             end
         end
-        if #Configs["Ignore Challegne Debuff"].Tables > 0 then
+        if #Configs["Ignore Challenge Debuff"].Tables > 0 then
             local Debuff_Online = Challenge_Normal_Lobby().LobbyBanner.Banner.Main.ChallengeInterface.Background.Difficulty.Label.Text
             if Debuff_Online:find(" ") then
                 local Debuff_Tables = {}
@@ -751,21 +769,21 @@ if game.PlaceId == 16146832113 then
                     table.insert(Debuff_Tables, Debuff_Online[I]:lower())
                 end
 
-                for I = 1, #Configs["Ignore Challegne Debuff"].Tables do
-                    if table.find(Debuff_Tables, Configs["Ignore Challegne Debuff"].Tables[I]:lower()) then
+                for I = 1, #Configs["Ignore Challenge Debuff"].Tables do
+                    if table.find(Debuff_Tables, Configs["Ignore Challenge Debuff"].Tables[I]:lower()) then
                         return true
                     end
                 end
             else
-                for I = 1, #Configs["Ignore Challegne Debuff"].Tables do
-                    if Debuff_Online:lower() == Configs["Ignore Challegne Debuff"].Tables[I]:lower() then
+                for I = 1, #Configs["Ignore Challenge Debuff"].Tables do
+                    if Debuff_Online:lower() == Configs["Ignore Challenge Debuff"].Tables[I]:lower() then
                         return true
                     end
                 end
             end
         end
-        if #Configs["Ignore Challegne World"].Tables > 0 then
-            for I, V in next, Configs["Ignore Challegne World"].Tables do
+        if #Configs["Ignore Challenge World"].Tables > 0 then
+            for I, V in next, Configs["Ignore Challenge World"].Tables do
                 local Data_Require = require(game:GetService("ReplicatedStorage").Modules.Data.StagesData)
                 for IX, VX in next, Data_Require.Challenge do
                     if IX == Name_to_Stage(V) then
@@ -905,7 +923,7 @@ if game.PlaceId == 16146832113 then
                     else
                         pcall(
                             function()
-                                if Configs["Auto Join Challenge"].Value and not Challenge_Ignore() then wait(Configs["Start Delay"].Value)
+                            if not Game.Cannot_Challenge and Configs["Auto Join Challenge"].Value and not Challenge_Ignore() then wait(Configs["Start Delay"].Value)
                                 game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer("Enter", Challenge_Normal_Lobby())
                             elseif Story_Lobby() and (Configs["Auto Join Legend Stage"].Value or Configs["Auto Join Normal"].Value or Configs["Auto Join Hights"].Value) then wait(Configs["Start Delay"].Value)
                                 game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer("Enter", Story_Lobby())
@@ -1147,7 +1165,7 @@ else
 
     local function Check_Macro_Time_Money(x)
         repeat task.wait() until (tonumber(Yen()) >= tonumber(x["money"]) and tonumber(Game_Time()) >= tonumber(x["time"])) or not Configs["Macro Play"].Value or Loader.Unloaded
-        
+
         task.wait(Configs["Macro Delay"].Value)
     end
 
@@ -1407,19 +1425,19 @@ else
                     pcall(
                         function()
                             local Visual = OwnGui.EndScreen
-                            if Configs["Auto Leave"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Leave") and Visual.Container.EndScreen:FindFirstChild("Leave").Visible then
+                            if (Configs["Auto Leave"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Leave") and Visual.Container.EndScreen:FindFirstChild("Leave").Visible) or (Stage_Type() == "Challenge" and End_Stage() == "VICTORY!") then
                                 if Configs["Send Webhook"].Value then
                                     wait(2)
                                 end
                                 NavigationGUISelect(Visual.Container.EndScreen.Leave.Button)
                                 wait(3)
-                            elseif Configs["Auto Next"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Next") and Visual.Container.EndScreen:FindFirstChild("Next").Visible then
+                            elseif not Game.Cannot_Next and Configs["Auto Next"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Next") and Visual.Container.EndScreen:FindFirstChild("Next").Visible then
                                 if Configs["Send Webhook"].Value then
                                     wait(2)
                                 end
                                 NavigationGUISelect(Visual.Container.EndScreen.Next.Button)
                                 wait(3)
-                            elseif Configs["Auto Retry"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Retry") and Visual.Container.EndScreen:FindFirstChild("Retry").Visible then
+                            elseif not Game.Cannot_Retry and Configs["Auto Retry"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Retry") and Visual.Container.EndScreen:FindFirstChild("Retry").Visible then
                                 if Configs["Send Webhook"].Value then
                                     wait(2)
                                 end
@@ -1993,6 +2011,29 @@ function Unloaded_Loader()
         end
     end
 end
+
+Game.Signals.Notify_Check =
+game:GetService("Players").LocalPlayer.PlayerGui.Notification.Main.ChildAdded:Connect(
+	function(v)
+		local Text = v:WaitForChild("Label").Text
+
+        if Text == "Half Hourly Challenge has been reset!" then
+            Game.Challenge_Changed = true
+            Game.Cannot_Challenge = false
+        elseif Text == "Summon banner has been reset!" then
+            Game.Banner_Changed = true
+        elseif Text == "Unable to go to next act!" and not Game.Cannot_Next then
+            Game.Cannot_Next = true
+            Loader:Notify({Title = "Error", SubContent = "Unable to go to next act!"})
+        elseif Text:match("cannot be retried!") and not Game.Cannot_Retry then
+            Game.Cannot_Retry = true
+            Loader:Notify({Title = "Error", SubContent = "This act cannot be retried!"})
+        elseif Text:match("You haven't unlocked Story") or Text:match("You have already completed this challenge") then
+            Game.Cannot_Challenge = true
+        end
+	end
+)
+
 
 task.spawn(Update_Lock)
 task.spawn(Unloaded_Loader)
