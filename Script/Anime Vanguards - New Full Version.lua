@@ -1431,7 +1431,7 @@ else
                                 end
                                 NavigationGUISelect(Visual.Container.EndScreen.Leave.Button)
                                 wait(3)
-                            elseif not Game.Cannot_Next and Configs["Auto Next"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Next") and Visual.Container.EndScreen:FindFirstChild("Next").Visible then
+                            elseif not Game.Cannot_Next and Stage_Type() ~= "FAILED" and Configs["Auto Next"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Next") and Visual.Container.EndScreen:FindFirstChild("Next").Visible then
                                 if Configs["Send Webhook"].Value then
                                     wait(2)
                                 end
