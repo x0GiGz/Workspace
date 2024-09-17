@@ -8,13 +8,13 @@ local Configs = Loader.Options
 local Windows = Loader:CreateWindow(
     {
         Title = "Anime Vanguards",
-        SubTitle = "1.1 [YT @crazyday3693]",
+        SubTitle = "1.2 [YT @crazyday3693]",
         TabWidth = 130,
         Size = UDim2.fromOffset(540, 440),
         Theme = "Darker",
         Acrylic = true,
-        UpdateDate = "09/16/2024 - 1.1",
-        UpdateLog = "● Add Select Vote Debuff"..SetFile:Space().."● Add Auto Vote Debuff"..SetFile:Space().."● Add Auto Sell Select Units"..SetFile:Space().."● Add Import File"..SetFile:Space().."● Add Export File"..SetFile:Space().."● Add Paragon Macro Options",
+        UpdateDate = "09/17/2024 - 1.2",
+        UpdateLog = "● More Accurate Macro"..SetFile:Space().."● Fix Auto Sell",
         IconVisual = nil,
         BlackScreen = false,
         MinimizeKey = Enum.KeyCode.LeftAlt
@@ -618,7 +618,7 @@ Tabs_Secs[3][3]:AddToggle(
         Description =  "Experiencing issues with the recorded macro? Try not to press upgrade to early, place units to close to each other",
         Default = false,
         Callback = function(Value)
-            if Value then Macro.Value = {Data = {}} if game.PlaceId ~= 16146832113 and #game:GetService("Players"):GetChildren() > 1 then game:GetService("Players").LocalPlayer:Kick("Make sure that in The server is no other than you") end end
+            if Value then Macro.Value = {Data = {}} end
         end
     }
 )
@@ -1022,6 +1022,38 @@ else
         end
     end
 
+    local function Units_Active(idx)
+        local path = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Function/ohaux.lua"))()
+        local script_path = game:GetService("StarterPlayer").Modules.Gameplay.UnitManager.UnitManagerHandler
+        local closure_name = "ShowUnitManager"
+        local upvalue_index = 3
+        local closure_constants = {
+            [1] = "Disconnect",
+            [2] = "table",
+            [3] = "clear",
+            [5] = "GetAllPlacedUnits",
+            [6] = "GetDictionaryLength",
+            [7] = "script"
+        }
+
+        local closure = path.searchClosure(script_path, closure_name, upvalue_index, closure_constants)
+        local element_index = "GetAllPlacedUnits"
+        for _ , data in next, getupvalues(debug.getupvalue(closure, upvalue_index)[element_index]) do
+            if typeof(data) == "table" then
+                for n, a in next, data._ActiveUnits do
+                    if n == idx and a.Player == game:GetService("Players").LocalPlayer then
+                        local data_of_unit = {
+                            name = tostring(a.Data.Name),
+                            position = tostring(a.Position),
+                            rotation = tostring(a.Rotation),
+                        }
+                        return data_of_unit
+                    end
+                end
+            end
+        end
+    end
+
     local function Upgrade_Price(TexT)
         if OwnGui.UpgradeInterfaces:GetChildren()[1].Stats.UpgradeButton.Inner.Label.Text == "Max" then
             return Unit_Data(TexT).upgradeprice[#Unit_Data(TexT).upgradeprice].Price
@@ -1116,13 +1148,21 @@ else
 
     local function Update_Status()
         if Configs["Macro Record"].Value and Macro.Value[tostring(Macro_Len())] then
-            return "\nIndex : "..tostring(Macro_Len().."/"..Macro_Len()).."\nAction : "..Macro.Value[tostring(Macro_Len())]["type"].."\nUnit : "..Macro.Value[tostring(Macro_Len())]["unit"].."\nMoney : "..Macro.Value[tostring(Macro_Len())]["money"].."\nTime : "..Macro.Value[tostring(Macro_Len())]["time"]
+            if Macro.Value[tostring(Macro_Len())]["rotation"] then
+                return "\nIndex : "..tostring(Macro_Len().."/"..Macro_Len()).."\nAction : "..Macro.Value[tostring(Macro_Len())]["type"].."\nUnit : "..Macro.Value[tostring(Macro_Len())]["unit"].."\nRotation : "..Macro.Value[tostring(Macro_Len())]["rotation"].."\nMoney : "..Macro.Value[tostring(Macro_Len())]["money"].."\nTime : "..Macro.Value[tostring(Macro_Len())]["time"]
+            else
+                return "\nIndex : "..tostring(Macro_Len().."/"..Macro_Len()).."\nAction : "..Macro.Value[tostring(Macro_Len())]["type"].."\nUnit : "..Macro.Value[tostring(Macro_Len())]["unit"].."\nMoney : "..Macro.Value[tostring(Macro_Len())]["money"].."\nTime : "..Macro.Value[tostring(Macro_Len())]["time"]
+            end
         elseif Configs["Macro Play"].Value and Macro.Playing and Stage_Name() == Macro.Playing.Data.World then
             local Data = Macro.Playing[tostring(Macro.Indexs)]
             if Macro.Ended then
                 return "\nIndex : "..tostring(Macro.Indexs.."/"..#Macro.Playing)
             else
-                return "\nIndex : "..tostring(Macro.Indexs.."/"..#Macro.Playing.."\nAction : "..Data["type"].."\nUnit : "..Data["unit"].."\nWaiting Money : "..Data["money"].."\nWaiting Time : "..Data["time"])
+                if Data["rotation"] then
+                    return "\nIndex : "..tostring(Macro.Indexs.."/"..#Macro.Playing.."\nAction : "..Data["type"].."\nUnit : "..Data["unit"].."\nRotation : "..Data["rotation"].."\nWaiting Money : "..Data["money"].."\nWaiting Time : "..Data["time"])
+                else
+                    return "\nIndex : "..tostring(Macro.Indexs.."/"..#Macro.Playing.."\nAction : "..Data["type"].."\nUnit : "..Data["unit"].."\nWaiting Money : "..Data["money"].."\nWaiting Time : "..Data["time"])
+                end
             end
         else
             return "\nIndex : 0/0"
@@ -1135,23 +1175,21 @@ else
                 if Loader.Unloaded or not Configs["Macro Record"].Value then
                     return
                 else
-                    if #OwnGui.UpgradeInterfaces:GetChildren() > 0 then
-                        OwnGui.UpgradeInterfaces:GetChildren()[1]:Destroy()
-                    end
-                    repeat wait() until #OwnGui.UpgradeInterfaces:GetChildren() > 0
-                    local unit = OwnGui.UpgradeInterfaces:GetChildren()[1]:WaitForChild("Unit"):WaitForChild("Main"):WaitForChild("UnitFrame"):FindFirstChildOfClass("Frame").Name
+                    if Units_Active(v.Name) then
+                        Macro_Data_Write()
 
-                    Macro_Data_Write()
-                    Macro_Insert(
-                        {
-                            ["type"] = "Place",
-                            ["unit"] = tostring(unit),
-                            ["money"] = tostring(Money_Write(unit, "Place")),
-                            ["time"] = tostring(Time_Write()),
-                            ["cframe"] = tostring(v.Position.X..", "..(v.Position.Y + 0.8)..", "..v.Position.Z)
-                        }
-                    )
-                    Macro_Write()
+                        Macro_Insert(
+                            {
+                                ["type"] = "Place",
+                                ["unit"] = Units_Active(v.Name).name,
+                                ["money"] = tostring(Money_Write(Units_Active(v.Name).name, "Place")),
+                                ["time"] = tostring(Time_Write()),
+                                ["cframe"] = Units_Active(v.Name).position,
+                                ["rotation"] = Units_Active(v.Name).rotation
+                            }
+                        )
+                        Macro_Write()
+                    end
                 end
             end)
         end
@@ -1273,7 +1311,7 @@ else
                                                         Data["unit"],
                                                         Unit_Data(Data["unit"]).id,
                                                         stringtopos(Data["cframe"]),
-                                                        0
+                                                        tonumber(Data["rotation"] or 0)
                                                     }
                                                 )
                                             end
@@ -1478,20 +1516,29 @@ else
                 if Loader.Unloaded then break
                 else
                     if tonumber(OwnGui.HUD.Map.WavesAmount.Text) >= tonumber(Configs["Select Wave"].Value) and Configs["Auto Sell Select Units"].Value and #Configs["Select Units"].Tables > 0 then
-                        if OwnGui:FindFirstChild("UnitManager") == nil then
-                            NavigationGUISelect(OwnGui.Guides.List.StageInfo.Buttons.UnitManager.Button)
-                        else
-                            pcall(
-                                function()
-                                    if #OwnGui.UnitManager.Holder.Main.List:GetChildren() >= 3 then
-                                        for I, V in next, OwnGui.UnitManager.Holder.Main.List:GetChildren() do
-                                            if V:IsA("Frame") and table.find(Configs["Select Units"].Tables, V.Unit:FindFirstChildOfClass("Frame").Name) then
-                                                game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Sell", V.Name)
-                                            end
-                                        end
+                        local path = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Function/ohaux.lua"))()
+                        local script_path = game:GetService("StarterPlayer").Modules.Gameplay.UnitManager.UnitManagerHandler
+                        local closure_name = "ShowUnitManager"
+                        local upvalue_index = 3
+                        local closure_constants = {
+                            [1] = "Disconnect",
+                            [2] = "table",
+                            [3] = "clear",
+                            [5] = "GetAllPlacedUnits",
+                            [6] = "GetDictionaryLength",
+                            [7] = "script"
+                        }
+
+                        local closure = path.searchClosure(script_path, closure_name, upvalue_index, closure_constants)
+                        local element_index = "GetAllPlacedUnits"
+                        for _ , data in next, getupvalues(debug.getupvalue(closure, upvalue_index)[element_index]) do
+                            if typeof(data) == "table" then
+                                for n, a in next, data._ActiveUnits do
+                                    if n and a and a.Player == game:GetService("Players").LocalPlayer and table.find(Configs["Select Units"].Tables, a.Data.Name) then
+                                        game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Sell", n)
                                     end
                                 end
-                            )
+                            end
                         end
                     end
                 end
