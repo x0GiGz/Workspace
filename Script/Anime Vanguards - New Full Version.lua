@@ -428,7 +428,7 @@ Tabs_Secs[2][3]:AddToggle(
     "Auto Vote Debuff",
     {
         Title = "Auto Vote Debuff",
-        Description = " Vote the select debuff by priority automatically",
+        Description = "Vote the select debuff by priority automatically",
         Default = false
     }
 )
@@ -468,7 +468,7 @@ Tabs_Secs[2][4]:AddToggle(
     "Auto Sell Select Units",
     {
         Title = "Auto Sell",
-        Description = " Sell the select units on select wave automatically, If you enabled auto sell with macro record the macro will not record sell select units",
+        Description = "Sell the select units on select wave automatically,\nIf you enabled auto sell with macro record the macro will not record sell select units",
         Default = false
     }
 )
@@ -595,7 +595,6 @@ Game.Buttons.Import =
 Tabs_Secs[3][2]:AddButton(
     {
         Title = "Import Macro File",
-        Description = nil,
         Callback = function()
             Import_File()
         end
