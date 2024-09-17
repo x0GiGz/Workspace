@@ -43,6 +43,7 @@ local Game =
     Challenge_Changed = false,
     Cannot_Challenge = false,
     Banner_Changed = false,
+    Send_Webhook = false,
     Cannot_Retry = false,
     Cannot_Next = false,
 
@@ -1426,23 +1427,23 @@ else
                         function()
                             local Visual = OwnGui.EndScreen
                             if (Configs["Auto Leave"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Leave") and Visual.Container.EndScreen:FindFirstChild("Leave").Visible) or (Stage_Type() == "Challenge" and End_Stage() == "VICTORY!") then
-                                if Configs["Send Webhook"].Value then
+                                if Configs["Send Webhook"].Value and not Game.Send_Webhook then
                                     wait(2)
                                 end
                                 NavigationGUISelect(Visual.Container.EndScreen.Leave.Button)
-                                wait(3)
+                                wait(1)
                             elseif not Game.Cannot_Next and Stage_Type() ~= "FAILED" and Configs["Auto Next"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Next") and Visual.Container.EndScreen:FindFirstChild("Next").Visible then
-                                if Configs["Send Webhook"].Value then
+                                if Configs["Send Webhook"].Value and not Game.Send_Webhook then
                                     wait(2)
                                 end
                                 NavigationGUISelect(Visual.Container.EndScreen.Next.Button)
-                                wait(3)
+                                wait(1)
                             elseif not Game.Cannot_Retry and Configs["Auto Retry"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Retry") and Visual.Container.EndScreen:FindFirstChild("Retry").Visible then
-                                if Configs["Send Webhook"].Value then
+                                if Configs["Send Webhook"].Value and not Game.Send_Webhook then
                                     wait(2)
                                 end
                                 NavigationGUISelect(Visual.Container.EndScreen.Retry.Button)
-                                wait(3)
+                                wait(1)
                             end
                         end
                     )
@@ -1700,7 +1701,9 @@ else
                         })
                         local response = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or (request)
                         response({Url = Configs["Url"].Value, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = Data})
+                        Game.Send_Webhook = true
                         repeat wait() until not Configs["Send Webhook"].Value or not OwnGui.EndScreen.Enabled or not OwnGui.EndScreen.Container.Visible or Loader.Unloaded
+                        Game.Send_Webhook = false
                         Game.Webhook = {}
                     end
                 end
