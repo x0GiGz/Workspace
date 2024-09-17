@@ -468,7 +468,7 @@ Tabs_Secs[2][4]:AddToggle(
     "Auto Sell Select Units",
     {
         Title = "Auto Sell",
-        Description = " Sell the select units on select wave automatically",
+        Description = " Sell the select units on select wave automatically, If you enabled auto sell with macro record the macro will not record sell select units",
         Default = false
     }
 )
@@ -1583,7 +1583,7 @@ else
                     if OwnGui.HUD.Map.WavesAmount.Text == "0" then
                         Game.Time = tick()
                         if Configs["Macro Play"].Value then
-                           Configs["Macro Play"]:SetValue(false)
+                           Configs["Macro Play"].Value = false
                            Loader:Notify({Title = "Replaying Macro...", Duration = 5, Disable = true})
                            Configs["Macro Play"]:SetValue(true)
                         end
