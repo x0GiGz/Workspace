@@ -1582,7 +1582,8 @@ else
                     if OwnGui.HUD.Map.WavesAmount.Text == "0" then
                         Game.Time = tick()
                         if Configs["Macro Play"].Value then
-                           Configs["Macro Play"].Value = false
+                           Configs["Macro Play"]:SetValue(false)
+                           wait(1)
                            Loader:Notify({Title = "Replaying Macro...", Duration = 5, Disable = true})
                            Configs["Macro Play"]:SetValue(true)
                         end
