@@ -1432,7 +1432,7 @@ else
                                 end
                                 NavigationGUISelect(Visual.Container.EndScreen.Leave.Button)
                                 wait(1)
-                            elseif not Game.Cannot_Next and Stage_Type() ~= "FAILED" and Configs["Auto Next"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Next") and Visual.Container.EndScreen:FindFirstChild("Next").Visible then
+                            elseif not Game.Cannot_Next and End_Stage() ~= "FAILED" and Configs["Auto Next"].Value and Visual.Enabled and Visual.ShowEndScreen.Visible and Visual.Container.EndScreen:FindFirstChild("Next") and Visual.Container.EndScreen:FindFirstChild("Next").Visible then
                                 if Configs["Send Webhook"].Value and not Game.Send_Webhook then
                                     wait(2)
                                 end
@@ -1641,7 +1641,7 @@ else
             while true and wait() do
                 if Loader.Unloaded then break
                 else
-                    if Configs["Auto Lobby Challenge"].Value and Game.Challenge_Changed then
+                    if Configs["Auto Lobby Challenge"].Value and Game.Challenge_Changed and Stage_Type() ~= "Challenge" then
                         Return_Lobby()
                         wait(10)
                     end
