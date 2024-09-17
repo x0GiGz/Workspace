@@ -1661,9 +1661,9 @@ else
                         wait(2)
                         for I, V in next, OwnGui.EndScreen.Container.EndScreen.Main.StageRewards.Main:GetChildren() do
                             if V:IsA("Frame") and V.Holder.Main:FindFirstChild("Amount") then
-                                table.insert(Game.Webhook, V.Holder.Main.Amount.Text.." "..V.Name)
+                                table.insert(Game.Webhook, V.Holder.Main.Amount.Text.." "..V.Name.." ["..V.Holder:FindFirstChildOfClass("UIGradient").Name or "???".."]")
                             elseif V:IsA("Frame") and V.Holder.Main:FindFirstChild("Amount") == nil then
-                                table.insert("x1 "..V.Name)
+                                table.insert(Game.Webhook, "x1 "..V.Name.." ["..V.Holder:FindFirstChildOfClass("UIGradient").Name or "???".."]")
                             end
                         end
                         local Data = game:GetService("HttpService"):JSONEncode({
