@@ -1660,10 +1660,14 @@ else
                     if Configs["Send Webhook"].Value and OwnGui.EndScreen.Enabled and OwnGui.EndScreen.Container.Visible then
                         wait(2)
                         for I, V in next, OwnGui.EndScreen.Container.EndScreen.Main.StageRewards.Main:GetChildren() do
+                            local rarity = "Common"
+                            if V:IsA("Frame") and V.Holder:FindFirstChildOfClass("UIGradient") and V.Holder:FindFirstChildOfClass("UIGradient").Name ~= "Border" then
+                               rarity = V.Holder:FindFirstChildOfClass("UIGradient").Name
+                            end
                             if V:IsA("Frame") and V.Holder.Main:FindFirstChild("Amount") then
-                                table.insert(Game.Webhook, V.Holder.Main.Amount.Text.." "..V.Name.." ["..V.Holder:FindFirstChildOfClass("UIGradient").Name or "???".."]")
+                                table.insert(Game.Webhook, V.Holder.Main.Amount.Text.." "..V.Name.." ["..rarity.."]")
                             elseif V:IsA("Frame") and V.Holder.Main:FindFirstChild("Amount") == nil then
-                                table.insert(Game.Webhook, "x1 "..V.Name.." ["..V.Holder:FindFirstChildOfClass("UIGradient").Name or "???".."]")
+                                table.insert(Game.Webhook, "x1 "..V.Name.." ["..rarity.."]")
                             end
                         end
                         local Data = game:GetService("HttpService"):JSONEncode({
