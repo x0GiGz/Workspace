@@ -952,12 +952,7 @@ else
     end
 
     local function Yen()
-        local TexT = OwnGui.Hotbar.Main.Yen.Text:split("¥")[1]
-
-        if TexT:find(",") then
-           TexT = TexT:gsub(",","")
-        end
-        return TexT
+        return getupvalues(require(game:GetService("StarterPlayer").Modules.Gameplay.PlayerYenHandler).GetYen)[1]
     end
 
     local function Stage_Name()
