@@ -4,7 +4,6 @@ local Loader = loadstring(game:HttpGet("https://raw.githubusercontent.com/x0GiGz
 local Saveed = loadstring(game:HttpGet("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Gui/fluent%20save%20config.lua"))()
 local Setting = loadstring(game:HttpGet("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Gui/fluent%20interfaces.lua"))()
 local SetFile = loadstring(game:HttpGet("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Function/filehelper.lua"))()
-local MiscFnc = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Function/ohaux.lua"))()
 local Configs = Loader.Options
 local Windows = Loader:CreateWindow(
     {
@@ -1042,32 +1041,14 @@ else
     end
 
     local function Units_Active(idx)
-        local script_path = game:GetService("StarterPlayer").Modules.Gameplay.UnitManager.UnitManagerHandler
-        local closure_name = "ShowUnitManager"
-        local upvalue_index = 3
-        local closure_constants = {
-            [1] = "Disconnect",
-            [2] = "table",
-            [3] = "clear",
-            [5] = "GetAllPlacedUnits",
-            [6] = "GetDictionaryLength",
-            [7] = "script"
-        }
-
-        local closure = MiscFnc.searchClosure(script_path, closure_name, upvalue_index, closure_constants)
-        local element_index = "GetAllPlacedUnits"
-        for _ , data in next, getupvalues(debug.getupvalue(closure, upvalue_index)[element_index]) do
-            if typeof(data) == "table" then
-                for n, a in next, data._ActiveUnits do
-                    if n == idx and a.Player == game:GetService("Players").LocalPlayer then
-                        local data_of_unit = {
-                            name = tostring(a.Data.Name),
-                            position = tostring(a.Position),
-                            rotation = tostring(a.Rotation),
-                        }
-                        return data_of_unit
-                    end
-                end
+        for i,v in next, getupvalues(getupvalues(require(game:GetService("StarterPlayer").Modules.Gameplay.UnitManager.UnitManagerHandler).ShowUnitManager)[3].GetAllPlacedUnits)[1]._ActiveUnits do
+            if i == idx and v.Player == game:GetService("Players").LocalPlayer then
+                local data_of_unit = {
+                    name = tostring(v.Data.Name),
+                    position = tostring(v.Position),
+                    rotation = tostring(v.Rotation),
+                }
+                return data_of_unit
             end
         end
     end
@@ -1546,28 +1527,9 @@ else
                 if Loader.Unloaded then break
                 else
                     if tonumber(OwnGui.HUD.Map.WavesAmount.Text) >= tonumber(Configs["Select Wave"].Value) and Configs["Auto Sell Select Units"].Value and #Configs["Select Units"].Tables > 0 then
-                        local path = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/x0GiGz/Workspace/main/Function/ohaux.lua"))()
-                        local script_path = game:GetService("StarterPlayer").Modules.Gameplay.UnitManager.UnitManagerHandler
-                        local closure_name = "ShowUnitManager"
-                        local upvalue_index = 3
-                        local closure_constants = {
-                            [1] = "Disconnect",
-                            [2] = "table",
-                            [3] = "clear",
-                            [5] = "GetAllPlacedUnits",
-                            [6] = "GetDictionaryLength",
-                            [7] = "script"
-                        }
-
-                        local closure = MiscFnc.searchClosure(script_path, closure_name, upvalue_index, closure_constants)
-                        local element_index = "GetAllPlacedUnits"
-                        for _ , data in next, getupvalues(debug.getupvalue(closure, upvalue_index)[element_index]) do
-                            if typeof(data) == "table" then
-                                for n, a in next, data._ActiveUnits do
-                                    if n and a and a.Player == game:GetService("Players").LocalPlayer and table.find(Configs["Select Units"].Tables, a.Data.Name) then
-                                        game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Sell", n)
-                                    end
-                                end
+                        for i,v in next, getupvalues(getupvalues(require(game:GetService("StarterPlayer").Modules.Gameplay.UnitManager.UnitManagerHandler).ShowUnitManager)[3].GetAllPlacedUnits)[1]._ActiveUnits do
+                            if i and v and v.Player == game:GetService("Players").LocalPlayer and table.find(Configs["Select Units"].Tables, v.Data.Name) then
+                                game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Sell", i)
                             end
                         end
                     end
