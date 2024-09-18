@@ -1303,6 +1303,7 @@ else
                                                 Loader:Notify({Title = "Error", SubContent = "Invaild Unit On Slot", Disable = true, Duration = 2.5})
                                             else
                                                 Check_Macro_Time_Money(Data)
+                                                require(game:GetService("StarterPlayer").Modules.Gameplay.ClientUnitHandler).IsPlacingUnit = true
                                                 game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer(
                                                     "Render",
                                                     {
@@ -1312,6 +1313,7 @@ else
                                                         tonumber(Data["rotation"] or 0)
                                                     }
                                                 )
+                                                require(game:GetService("StarterPlayer").Modules.Gameplay.ClientUnitHandler).IsPlacingUnit = false
                                             end
                                         elseif Data["type"] == "Upgrade" then
                                             if not Configs["Macro Play"].Value or Loader.Unloaded then
