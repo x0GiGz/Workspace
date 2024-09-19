@@ -1775,6 +1775,7 @@ local aa = {
             nil,
             function ()
                 p.Window:Minimize()
+                print(p.Window.Root.Visible)
             end
             )
             return o
@@ -2877,7 +2878,6 @@ local aa = {
             l.Lock = m.Lock
             l.UnLock = m.UnLock
             l.IsLocked = m.IsLocked
-            print(m.LockButton)
             local search = ac(f.Textbox)()
             local n, o =
                 e(
