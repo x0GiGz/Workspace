@@ -939,7 +939,9 @@ if game.PlaceId == 16146832113 then
         end
     )
 else
-    Game.Others.Notify1 = Loader:Notify({Title = "Status : None", SubContent = "\n", Disable = true})
+    if Configs["Macro Status"].Value then
+        Game.Others.Notify1 = Loader:Notify({Title = "Status : None", SubContent = "\n", Disable = true})
+    end
     local OwnGui = game:GetService("Players").LocalPlayer.PlayerGui
     Game.Buttons.Equip:Lock()
 
@@ -1070,7 +1072,7 @@ else
             unt = stringtopos(unt)
         end
         for _, Unit in next, workspace.UnitVisuals.UnitCircles:GetChildren() do
-            if Unit.Position == unt or (Unit.Position - unt).Magnitude <= 2 then
+            if Unit.Position == unt or (Unit.Position - unt).Magnitude <= 0.75 then
                 return Unit.Name
             end
         end
