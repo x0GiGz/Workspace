@@ -1044,6 +1044,8 @@ else
                     name = tostring(v.Data.Name),
                     position = tostring(v.Position),
                     rotation = tostring(v.Rotation),
+                    priority = v.Data.Priority,
+                    current_upgrade = v.Data.CurrentUpgrade
                 }
                 return data_of_unit
             end
@@ -1078,6 +1080,22 @@ else
         end
     end
 
+    local function Unit_Priority(x)
+        if x == "First" then
+            return 1
+        elseif x == "Closest" then
+            return 2
+        elseif x == "Last" then
+            return 3
+        elseif x == "Strongest" then
+            return 4
+        elseif x == "Weakest" then
+            return 5
+        else
+            return 0
+        end
+    end
+
     local function Check_Units(name)
         for I, V in next, OwnGui.Hotbar.Main.Units:GetChildren() do
             if V:IsA("Frame") then
@@ -1085,6 +1103,17 @@ else
                 if V.UnitTemplate.Holder.Main.UnitName.Text == name then
                     return true
                 end
+            end
+        end
+    end
+
+    local function Check_Places(pos)
+        if type(pos) == "string" then
+            pos = stringtopos(pos)
+        end
+        for i,v in next, workspace.UnitVisuals.UnitCircles:GetChildren() do
+            if v.Position == pos or (v.Position - pos).Magnitude <= 1.25 then
+                return true
             end
         end
     end
@@ -1152,6 +1181,8 @@ else
         if Configs["Macro Record"].Value and Macro.Value[tostring(Macro_Len())] then
             if Macro.Value[tostring(Macro_Len())]["rotation"] then
                 return "\nIndex : "..tostring(Macro_Len().."/"..Macro_Len()).."\nAction : "..Macro.Value[tostring(Macro_Len())]["type"].."\nUnit : "..Macro.Value[tostring(Macro_Len())]["unit"].."\nRotation : "..Macro.Value[tostring(Macro_Len())]["rotation"].."\nMoney : "..Macro.Value[tostring(Macro_Len())]["money"].."\nTime : "..Macro.Value[tostring(Macro_Len())]["time"]
+            elseif Macro.Value[tostring(Macro_Len())]["value"] then
+                return "\nIndex : "..tostring(Macro_Len().."/"..Macro_Len()).."\nAction : "..Macro.Value[tostring(Macro_Len())]["type"].."\nUnit : "..Macro.Value[tostring(Macro_Len())]["unit"].."\nValue : "..Macro.Value[tostring(Macro_Len())]["value"].."\nMoney : "..Macro.Value[tostring(Macro_Len())]["money"].."\nTime : "..Macro.Value[tostring(Macro_Len())]["time"]
             else
                 return "\nIndex : "..tostring(Macro_Len().."/"..Macro_Len()).."\nAction : "..Macro.Value[tostring(Macro_Len())]["type"].."\nUnit : "..Macro.Value[tostring(Macro_Len())]["unit"].."\nMoney : "..Macro.Value[tostring(Macro_Len())]["money"].."\nTime : "..Macro.Value[tostring(Macro_Len())]["time"]
             end
@@ -1162,6 +1193,8 @@ else
             else
                 if Data["rotation"] then
                     return "\nIndex : "..tostring(Macro.Indexs.."/"..#Macro.Playing.."\nAction : "..Data["type"].."\nUnit : "..Data["unit"].."\nRotation : "..Data["rotation"].."\nWaiting Money : "..Data["money"].."\nWaiting Time : "..Data["time"])
+                elseif Data["value"] then
+                    return "\nIndex : "..tostring(Macro.Indexs.."/"..#Macro.Playing.."\nAction : "..Data["type"].."\nUnit : "..Data["unit"].."\nValue : "..Data["value"].."\nWaiting Money : "..Data["money"].."\nWaiting Time : "..Data["time"])
                 else
                     return "\nIndex : "..tostring(Macro.Indexs.."/"..#Macro.Playing.."\nAction : "..Data["type"].."\nUnit : "..Data["unit"].."\nWaiting Money : "..Data["money"].."\nWaiting Time : "..Data["time"])
                 end
@@ -1205,13 +1238,16 @@ else
                     local Upgrade_Button, Sell_Button, Priority = v:WaitForChild("Stats"):WaitForChild("UpgradeButton"):WaitForChild("Inner"):WaitForChild("Label"), v:WaitForChild("Unit"):WaitForChild("Sell"):WaitForChild("Button"), v:WaitForChild("Unit"):WaitForChild("Priority"):WaitForChild("Inner"):WaitForChild("Label")
                     Game.Signals[v.Name.."Upgrade"] = Upgrade_Button:GetPropertyChangedSignal("Text"):Connect(
                         function()
-                            if Configs["Macro Record"].Value and not Loader.Unloaded then
+                            if Configs["Macro Record"].Value and not Loader.Unloaded and Units_Active(v.Name) then
+                                local unit = Units_Active(v.Name)
+
                                 Macro_Data_Write()
                                 Macro_Insert(
                                     {
                                         ["type"] = "Upgrade",
-                                        ["unit"] = tostring(v.Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name),
-                                        ["money"] = tostring(Money_Write(v.Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name, "Upgrade")),
+                                        ["unit"] = unit.name,
+                                        ["value"] = tostring(unit.current_upgrade - 1),
+                                        ["money"] = tostring(Money_Write(unit.name, "Upgrade")),
                                         ["time"] = tostring(Time_Write()),
                                         ["cframe"] = tostring(Unit_CFrame(v.Name))
                                     }
@@ -1222,12 +1258,15 @@ else
                     )
                     Game.Signals[v.Name.."Priority"] = Priority:GetPropertyChangedSignal("Text"):Connect(
                         function()
-                            if Configs["Macro Record"].Value and not Loader.Unloaded then
+                            if Configs["Macro Record"].Value and not Loader.Unloaded and Units_Active(v.Name) then
+                                local unit = Units_Active(v.Name)
+
                                 Macro_Data_Write()
                                 Macro_Insert(
                                     {
                                         ["type"] = "ChangePriority",
-                                        ["unit"] = tostring(v.Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name),
+                                        ["unit"] = unit.name,
+                                        ["value"] = v.Unit.Priority.Inner.Label.Text,
                                         ["money"] = "0",
                                         ["time"] = tostring(Time_Write()),
                                         ["cframe"] = tostring(Unit_CFrame(v.Name))
@@ -1239,12 +1278,14 @@ else
                     )
                     Game.Signals[v.Name.."Sell"] = Sell_Button.InputBegan:Connect(
                         function(input)
-                            if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Configs["Macro Record"].Value and not Loader.Unloaded then
+                            if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Units_Active(v.Name) and Configs["Macro Record"].Value and not Loader.Unloaded then
+                                local unit = Units_Active(v.Name)
+
                                 Macro_Data_Write()
                                 Macro_Insert(
                                     {
                                         ["type"] = "Sell",
-                                        ["unit"] = tostring(v.Unit.Main.UnitFrame:FindFirstChildOfClass("Frame").Name),
+                                        ["unit"] = unit.name,
                                         ["money"] = "0",
                                         ["time"] = tostring(Time_Write()),
                                         ["cframe"] = tostring(Unit_CFrame(v.Name))
@@ -1303,12 +1344,13 @@ else
                                     if not Configs["Macro Play"].Value or Loader.Unloaded then
                                         break
                                     else
-                                        Check_Macro_Time_Money(Data)
                                         if Data["type"] == "Place" then
                                             if not Configs["Macro Play"].Value or Loader.Unloaded then
                                                 break
                                             elseif not Check_Units(Data["unit"]) then
                                                 Loader:Notify({Title = "Error", SubContent = "Invaild Unit On Slot", Disable = true, Duration = 2.5})
+                                            elseif Check_Places(Data["cframe"]) then
+                                                Loader:Notify({Title = "Error", SubContent = "Unit On This Placed", Disable = true, Duration = 2.5})
                                             else
                                                 Check_Macro_Time_Money(Data)
                                                 require(game:GetService("StarterPlayer").Modules.Gameplay.ClientUnitHandler).IsPlacingUnit = true
@@ -1326,8 +1368,10 @@ else
                                         elseif Data["type"] == "Upgrade" then
                                             if not Configs["Macro Play"].Value or Loader.Unloaded then
                                                 break
-                                            elseif not Unit_Position(Data["cframe"]) then
+                                            elseif not Unit_Position(Data["cframe"]) or (Unit_Position(Data["cframe"]) and Units_Active(Unit_Position(Data["cframe"])).name ~= Data["unit"]) then
                                                 Loader:Notify({Title = "Error", SubContent = "Invaild Unit to Upgrade", Disable = true, Duration = 2.5})
+                                            elseif Data["value"] and Units_Active(Unit_Position(Data["cframe"])).current_upgrade >= tonumber(Data["value"]) + 1 then
+                                                Loader:Notify({Title = "Error", SubContent = "The Unit has been Upgraded", Disable = true, Duration = 2.5})
                                             else
                                                 Check_Macro_Time_Money(Data)
                                                 game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Upgrade", Unit_Position(Data["cframe"]))
@@ -1335,7 +1379,7 @@ else
                                         elseif Data["type"] == "Sell" then
                                             if not Configs["Macro Play"].Value or Loader.Unloaded then
                                                 break
-                                            elseif not Unit_Position(Data["cframe"]) then
+                                            elseif not Unit_Position(Data["cframe"]) or (Unit_Position(Data["cframe"]) and Units_Active(Unit_Position(Data["cframe"])).name ~= Data["unit"]) then
                                                 Loader:Notify({Title = "Error", SubContent = "Invaild Unit to Sell", Disable = true, Duration = 2.5})
                                             else
                                                 Check_Macro_Time_Money(Data)
@@ -1344,8 +1388,10 @@ else
                                         elseif Data["type"] == "ChangePriority" then
                                             if not Configs["Macro Play"].Value or Loader.Unloaded then
                                                 break
-                                            elseif not Unit_Position(Data["cframe"]) then
+                                            elseif not Unit_Position(Data["cframe"]) or (Unit_Position(Data["cframe"]) and Units_Active(Unit_Position(Data["cframe"])).name ~= Data["unit"]) then
                                                 Loader:Notify({Title = "Error", SubContent = "Invaild Unit to ChangePriority", Disable = true, Duration = 2.5})
+                                            elseif Data["value"] and Units_Active(Unit_Position(Data["cframe"])).priority == Unit_Priority(Data["value"]) then
+                                                Loader:Notify({Title = "Error", SubContent = "This Unit has Changed Priority", Disable = true, Duration = 2.5})
                                             else
                                                 Check_Macro_Time_Money(Data)
                                                 game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("ChangePriority", Unit_Position(Data["cframe"]))
