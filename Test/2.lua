@@ -1539,9 +1539,9 @@ local aa = {
         local j, k = e(h.Creator), e(h.Packages.Flipper)
         local l, m = j.New, j.AddSignal
         return function(n)
-            local xw = {x = nil}
+            local xo = e(h)
             local o, p, q, zq =
-                {VisibleXXX = nil},
+                {},
                 e(h),
                 function(o, p, q, r)
                     local s = {Callback = r or function()
@@ -1684,11 +1684,27 @@ local aa = {
                             if M == s.DragC and s.Dragging then
                                 local w = M.Position - s.DragA
                                 local c = UDim2.new(s.DragB.X.Scale, s.DragB.X.Offset + w.X, s.DragB.Y.Scale, s.DragB.Y.Offset + w.Y)
-                                game:GetService("TweenService"):Create(s.Frame, TweenInfo.new(0.2), {Position = c}):Play()
+                                game:GetService("TweenService"):Create(s.Frame, TweenInfo.new(0.125), {Position = c}):Play()
                             end
                         end
                     )
-                    xw.x = s.Frame
+                    task.spawn(
+                        function()
+                            repeat task.wait() until xo.Window and xo.Window.Root
+                            m(
+                                xo.Window.Root:GetPropertyChangedSignal "Visible",
+                                function()
+                                    if xo.Window.Root.Visible then
+                                        s.Frame.ImageTransparency = 0
+                                    else
+                                        s.Frame.ImageTransparency = 0.5
+                                    end
+                                end
+                            )
+                            repeat task.wait() until not xo.Window.Root
+                            s.Frame.ImageTransparency = 0.5
+                        end
+                    )
                     return s
                 end
             o.Frame =
@@ -1812,11 +1828,6 @@ local aa = {
             nil,
             function ()
                 p.Window:Minimize()
-                if p.Window.Root.Visible then
-                    xw.x.ImageTransparency = 1
-                else
-                    xw.x.ImageTransparency = 0.5
-                end
             end
             )
             return o
