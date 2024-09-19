@@ -925,8 +925,10 @@ if game.PlaceId == 16146832113 then
                         pcall(
                             function()
                             if not Game.Cannot_Challenge and Configs["Auto Join Challenge"].Value and not Challenge_Ignore() then wait(Configs["Start Delay"].Value)
+                            if (game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Enabled and game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Visible) or game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("MiniLobbyInterface") then return end
                                 game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer("Enter", Challenge_Normal_Lobby())
                             elseif Story_Lobby() and (Configs["Auto Join Legend Stage"].Value or Configs["Auto Join Normal"].Value or Configs["Auto Join Hights"].Value) then wait(Configs["Start Delay"].Value)
+                            if (game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Enabled and game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Visible) or game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("MiniLobbyInterface") then return end
                                 game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer("Enter", Story_Lobby())
                             end
                         end
