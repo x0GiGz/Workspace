@@ -691,7 +691,7 @@ end
 
 for i = 1, #Game.Legend_Stage_Mode do
     Tabs_Secs[3][5]:AddDropdown(
-        "Legend Stage"..Game.Legend_Stage_Mode[i],
+        "LegendStage"..Game.Legend_Stage_Mode[i],
         {
             Title = Game.Legend_Stage_Mode[i],
             Values = SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"),
@@ -967,7 +967,7 @@ else
     end
 
     local function Stage_Type()
-        if OwnGui.Guides.List.StageInfo.StageName.Text:match("Paragon") then
+        if game:GetService("Players").LocalPlayer.PlayerGui.Guides.List.StageInfo.StageName.Text:match("Paragon") then
             return "Paragon"
         else
             return tostring(getupvalues(require(game:GetService("StarterPlayer").Modules.Interface.Loader.HUD.StageInfoHandler)._Init)[9].GameData.StageType)
@@ -1749,10 +1749,10 @@ function Import_File()
                         end
                     end
                     for i = 1, #Game.Legend_Stage_Mode do
-                        Configs["Legend Stage"..Game.Legend_Stage_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
+                        Configs["LegendStage"..Game.Legend_Stage_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
 
-                        if Configs["Legend Stage"..Game.Legend_Stage_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Legend Stage"..Game.Legend_Stage_Mode[i]].Value)) then
-                           Configs["Legend Stage"..Game.Legend_Stage_Mode[i]]:SetValue(nil)
+                        if Configs["LegendStage"..Game.Legend_Stage_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["LegendStage"..Game.Legend_Stage_Mode[i]].Value)) then
+                           Configs["LegendStage"..Game.Legend_Stage_Mode[i]]:SetValue(nil)
                         end
                     end
                 end
@@ -1801,10 +1801,10 @@ function Create_Macro()
                     end
                 end
                 for i = 1, #Game.Legend_Stage_Mode do
-                    Configs["Legend Stage"..Game.Legend_Stage_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
+                    Configs["LegendStage"..Game.Legend_Stage_Mode[i]]:SetValues(SetFile:ListFile("CrazyDay/Anime Vanguards/Macro","json"))
 
-                    if Configs["Legend Stage"..Game.Legend_Stage_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Legend Stage"..Game.Legend_Stage_Mode[i]].Value)) then
-                       Configs["Legend Stage"..Game.Legend_Stage_Mode[i]]:SetValue(nil)
+                    if Configs["LegendStage"..Game.Legend_Stage_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["LegendStage"..Game.Legend_Stage_Mode[i]].Value)) then
+                       Configs["LegendStage"..Game.Legend_Stage_Mode[i]]:SetValue(nil)
                     end
                 end
             end
@@ -1853,10 +1853,10 @@ function Delete_Macro()
                     end
                 end
                 for i = 1, #Game.Legend_Stage_Mode do
-                    Configs["Legend Stage"..Game.Legend_Stage_Mode[i]]:SetValues(list)
+                    Configs["LegendStage"..Game.Legend_Stage_Mode[i]]:SetValues(list)
 
-                    if Configs["Legend Stage"..Game.Legend_Stage_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["Legend Stage"..Game.Legend_Stage_Mode[i]].Value)) then
-                       Configs["Legend Stage"..Game.Legend_Stage_Mode[i]]:SetValue(nil)
+                    if Configs["LegendStage"..Game.Legend_Stage_Mode[i]].Value ~= nil and not isfile(string.format("CrazyDay/Anime Vanguards/Macro/".."%s.json", Configs["LegendStage"..Game.Legend_Stage_Mode[i]].Value)) then
+                       Configs["LegendStage"..Game.Legend_Stage_Mode[i]]:SetValue(nil)
                     end
                 end
             end
