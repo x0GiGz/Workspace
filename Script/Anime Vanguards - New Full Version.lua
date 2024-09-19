@@ -965,7 +965,11 @@ else
     end
 
     local function Stage_Type()
-        return tostring(getupvalues(require(game:GetService("StarterPlayer").Modules.Interface.Loader.HUD.StageInfoHandler)._Init)[9].GameData.StageType)
+        if OwnGui.Guides.List.StageInfo.StageName.Text:match("Paragon") then
+            return "Paragon"
+        else
+            return tostring(getupvalues(require(game:GetService("StarterPlayer").Modules.Interface.Loader.HUD.StageInfoHandler)._Init)[9].GameData.StageType)
+        end
     end
 
     local function End_Stage()
