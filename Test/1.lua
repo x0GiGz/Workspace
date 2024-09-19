@@ -1539,6 +1539,7 @@ local aa = {
         local j, k = e(h.Creator), e(h.Packages.Flipper)
         local l, m = j.New, j.AddSignal
         return function(n)
+            local xo = e(h)
             local o, p, q, zq =
                 {},
                 e(h),
@@ -1683,8 +1684,23 @@ local aa = {
                             if M == s.DragC and s.Dragging then
                                 local w = M.Position - s.DragA
                                 local c = UDim2.new(s.DragB.X.Scale, s.DragB.X.Offset + w.X, s.DragB.Y.Scale, s.DragB.Y.Offset + w.Y)
-                                game:GetService("TweenService"):Create(s.Frame, TweenInfo.new(0.2), {Position = c}):Play()
+                                game:GetService("TweenService"):Create(s.Frame, TweenInfo.new(0.125), {Position = c}):Play()
                             end
+                        end
+                    )
+                    task.spawn(
+                        function()
+                            repeat task.wait() until xo.Window and xo.Window.Root
+                            m(
+                                xo.Window.Root:GetPropertyChangedSignal "Visible",
+                                function()
+                                    if xo.Window.Root.Visible then
+                                        s.Frame.ImageTransparency = 0
+                                    else
+                                        s.Frame.ImageTransparency = 0.5
+                                    end
+                                end
+                            )
                         end
                     )
                     return s
@@ -1810,7 +1826,6 @@ local aa = {
             nil,
             function ()
                 p.Window:Minimize()
-                print(p.Window.Root.Visible)
             end
             )
             return o
