@@ -1071,6 +1071,7 @@ else
 
     local function Unit_Position(unt)
         if type(unt) == "string" then
+            repeat task.wait() until stringtopos
             unt = stringtopos(unt)
         end
         for _, Unit in next, workspace.UnitVisuals.UnitCircles:GetChildren() do
@@ -1109,6 +1110,7 @@ else
 
     local function Check_Places(pos)
         if type(pos) == "string" then
+            repeat task.wait() until stringtopos
             pos = stringtopos(pos)
         end
         for i,v in next, workspace.UnitVisuals.UnitCircles:GetChildren() do
