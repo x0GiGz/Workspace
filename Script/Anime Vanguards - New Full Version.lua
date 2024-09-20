@@ -1179,6 +1179,12 @@ else
         task.wait(Configs["Macro Delay"].Value)
     end
 
+    local function UpgradeInterfacesX()
+        if #OwnGui.UpgradeInterfaces:GetChildren() > 0 then
+            return OwnGui.UpgradeInterfaces:GetChildren()[1]
+        end
+    end
+
     local function Update_Status()
         if Configs["Macro Record"].Value and Macro.Value[tostring(Macro_Len())] then
             if Macro.Value[tostring(Macro_Len())]["rotation"] then
@@ -1299,7 +1305,7 @@ else
                     )
                     task.spawn(
                         function()
-                            repeat task.wait() until not v.Parent
+                            repeat task.wait() until not v.Parent or Loader.Unloaded
                             if Game.Signals[v.Name.."Upgrade"] then
                                Game.Signals[v.Name.."Upgrade"]:Disconnect()
                                Game.Signals[v.Name.."Upgrade"] = nil
@@ -1417,6 +1423,109 @@ else
                     end
                 end
             )
+        end
+    )
+
+    task.spawn(
+        function()
+            while true and wait() do
+                if Loader.Unloaded then break
+                else
+                    if Configs["Macro Record"].Value and UpgradeInterfacesX() and not Game.Signals[UpgradeInterfacesX().Name.."Upgrade"] then
+                        local UpgradeInterface = UpgradeInterfacesX()
+                        Game.Signals[UpgradeInterface.Name.."Upgrade"] = UpgradeInterface:WaitForChild("Stats"):WaitForChild("UpgradeButton"):WaitForChild("Inner"):WaitForChild("Label"):GetPropertyChangedSignal("Text"):Connect(
+                            function()
+                                if Configs["Macro Record"].Value and not Loader.Unloaded and Units_Active(UpgradeInterface.Name) then
+                                    local unit = Units_Active(UpgradeInterface.Name)
+
+                                    Macro_Data_Write()
+                                    Macro_Insert(
+                                        {
+                                            ["type"] = "Upgrade",
+                                            ["unit"] = unit.name,
+                                            ["value"] = tostring(unit.current_upgrade - 1),
+                                            ["money"] = tostring(Money_Write(unit.name, "Upgrade")),
+                                            ["time"] = tostring(Time_Write()),
+                                            ["cframe"] = tostring(Unit_CFrame(UpgradeInterface.Name))
+                                        }
+                                    )
+                                    Macro_Write()
+                                end
+                            end
+                        )
+                        task.spawn(
+                            function()
+                                repeat task.wait() until not UpgradeInterface.Parent or Loader.Unloaded
+                                if Game.Signals[UpgradeInterface.Name.."Upgrade"] then
+                                   Game.Signals[UpgradeInterface.Name.."Upgrade"]:Disconnect()
+                                   Game.Signals[UpgradeInterface.Name.."Upgrade"] = nil
+                                end
+                            end
+                        )
+                    elseif Configs["Macro Record"].Value and UpgradeInterfacesX() and not Game.Signals[UpgradeInterfacesX().Name.."Priority"] then
+                        local UpgradeInterface = UpgradeInterfacesX()
+                        Game.Signals[UpgradeInterface.Name.."Priority"] = UpgradeInterface:WaitForChild("Unit"):WaitForChild("Priority"):WaitForChild("Inner"):WaitForChild("Label"):GetPropertyChangedSignal("Text"):Connect(
+                            function()
+                                if Configs["Macro Record"].Value and not Loader.Unloaded and Units_Active(UpgradeInterface.Name) then
+                                    local unit = Units_Active(UpgradeInterface.Name)
+
+                                    Macro_Data_Write()
+                                    Macro_Insert(
+                                        {
+                                            ["type"] = "ChangePriority",
+                                            ["unit"] = unit.name,
+                                            ["value"] = UpgradeInterface.Unit.Priority.Inner.Label.Text,
+                                            ["money"] = "0",
+                                            ["time"] = tostring(Time_Write()),
+                                            ["cframe"] = tostring(Unit_CFrame(UpgradeInterface.Name))
+                                        }
+                                    )
+                                    Macro_Write()
+                                end
+                            end
+                        )
+                        task.spawn(
+                            function()
+                                repeat task.wait() until not UpgradeInterface.Parent or Loader.Unloaded
+                                if Game.Signals[UpgradeInterface.Name.."Priority"] then
+                                   Game.Signals[UpgradeInterface.Name.."Priority"]:Disconnect()
+                                   Game.Signals[UpgradeInterface.Name.."Priority"] = nil
+                                end
+                            end
+                        )
+                    elseif Configs["Macro Record"].Value and UpgradeInterfacesX() and not Game.Signals[UpgradeInterfacesX().Name.."Sell"] then
+                        local UpgradeInterface = UpgradeInterfacesX()
+                        Game.Signals[UpgradeInterface.Name.."Sell"] = UpgradeInterface:WaitForChild("Unit"):WaitForChild("Sell"):WaitForChild("Button").InputBegan:Connect(
+                            function(input)
+                                if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and Units_Active(UpgradeInterface.Name) and Configs["Macro Record"].Value and not Loader.Unloaded then
+                                    local unit = Units_Active(UpgradeInterface.Name)
+
+                                    Macro_Data_Write()
+                                    Macro_Insert(
+                                        {
+                                            ["type"] = "Sell",
+                                            ["unit"] = unit.name,
+                                            ["money"] = "0",
+                                            ["time"] = tostring(Time_Write()),
+                                            ["cframe"] = tostring(Unit_CFrame(UpgradeInterface.Name))
+                                        }
+                                    )
+                                    Macro_Write()
+                                end
+                            end
+                        )
+                        task.spawn(
+                            function()
+                                repeat task.wait() until not UpgradeInterface.Parent or Loader.Unloaded
+                                if Game.Signals[UpgradeInterface.Name.."Sell"] then
+                                   Game.Signals[UpgradeInterface.Name.."Sell"]:Disconnect()
+                                   Game.Signals[UpgradeInterface.Name.."Sell"] = nil
+                                end
+                            end
+                        )
+                    end
+                end
+            end
         end
     )
 
