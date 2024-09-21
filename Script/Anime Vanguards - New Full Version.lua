@@ -1356,17 +1356,21 @@ else
                                                 Loader:Notify({Title = "Error", SubContent = "Unit On This Placed", Disable = true, Duration = 2.5})
                                             else
                                                 Check_Macro_Time_Money(Data)
-                                                require(game:GetService("StarterPlayer").Modules.Gameplay.ClientUnitHandler).IsPlacingUnit = true
-                                                game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer(
-                                                    "Render",
-                                                    {
-                                                        Data["unit"],
-                                                        Unit_Data(Data["unit"]).id,
-                                                        stringtopos(Data["cframe"]),
-                                                        tonumber(Data["rotation"] or 0)
-                                                    }
-                                                )
-                                                require(game:GetService("StarterPlayer").Modules.Gameplay.ClientUnitHandler).IsPlacingUnit = false
+                                                if not Configs["Macro Play"].Value or Loader.Unloaded then
+                                                    break
+                                                else
+                                                    require(game:GetService("StarterPlayer").Modules.Gameplay.ClientUnitHandler).IsPlacingUnit = true
+                                                    game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer(
+                                                        "Render",
+                                                        {
+                                                            Data["unit"],
+                                                            Unit_Data(Data["unit"]).id,
+                                                            stringtopos(Data["cframe"]),
+                                                            tonumber(Data["rotation"] or 0)
+                                                        }
+                                                    )
+                                                    require(game:GetService("StarterPlayer").Modules.Gameplay.ClientUnitHandler).IsPlacingUnit = false
+                                                end
                                             end
                                         elseif Data["type"] == "Upgrade" then
                                             if not Configs["Macro Play"].Value or Loader.Unloaded then
@@ -1377,7 +1381,11 @@ else
                                                 Loader:Notify({Title = "Error", SubContent = "The Unit has been Upgraded", Disable = true, Duration = 2.5})
                                             else
                                                 Check_Macro_Time_Money(Data)
-                                                game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Upgrade", Unit_Position(Data["cframe"]))
+                                                if not Configs["Macro Play"].Value or Loader.Unloaded then
+                                                    break
+                                                else
+                                                    game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Upgrade", Unit_Position(Data["cframe"]))
+                                                end
                                             end
                                         elseif Data["type"] == "Sell" then
                                             if not Configs["Macro Play"].Value or Loader.Unloaded then
@@ -1386,7 +1394,11 @@ else
                                                 Loader:Notify({Title = "Error", SubContent = "Invaild Unit to Sell", Disable = true, Duration = 2.5})
                                             else
                                                 Check_Macro_Time_Money(Data)
-                                                game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Sell", Unit_Position(Data["cframe"]))
+                                                if not Configs["Macro Play"].Value or Loader.Unloaded then
+                                                    break
+                                                else
+                                                    game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("Sell", Unit_Position(Data["cframe"]))
+                                                end
                                             end
                                         elseif Data["type"] == "ChangePriority" then
                                             if not Configs["Macro Play"].Value or Loader.Unloaded then
@@ -1397,7 +1409,11 @@ else
                                                 Loader:Notify({Title = "Error", SubContent = "This Unit has Changed Priority", Disable = true, Duration = 2.5})
                                             else
                                                 Check_Macro_Time_Money(Data)
-                                                game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("ChangePriority", Unit_Position(Data["cframe"]))
+                                                if not Configs["Macro Play"].Value or Loader.Unloaded then
+                                                    break
+                                                else
+                                                    game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("ChangePriority", Unit_Position(Data["cframe"]))
+                                                end
                                             end
                                         end
                                         task.wait(0.475)
