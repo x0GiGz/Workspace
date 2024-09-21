@@ -740,15 +740,19 @@ if game.PlaceId == 16146832113 then
         end
     end
 
-    local function Challenge_Ignore()
+    local function Challenge_Check_Rewards()
         if #Configs["Target Challenge Rewards"].Tables > 0 then
-            for i,v in next, Challenge_Normal_Lobby().LobbyBanner.Banner.Main.ChallengeInterface.Background.Rewards:GetChildren() do
-                if table.find(Configs["Target Challenge Rewards"].Tables, v.Name) then
-                else
+            for I = 1, #Configs["Target Challenge Rewards"].Tables do
+                if Challenge_Normal_Lobby().LobbyBanner.Banner.Main.ChallengeInterface.Background.Rewards:FindFirstChild(Configs["Target Challenge Rewards"].Tables[I]) then
                     return true
                 end
             end
+        else
+            return true
         end
+    end
+
+    local function Challenge_Ignore()
         if #Configs["Ignore Challenge Debuff"].Tables > 0 then
             local Debuff_Online = Challenge_Normal_Lobby().LobbyBanner.Banner.Main.ChallengeInterface.Background.Difficulty.Label.Text
             if Debuff_Online:find(" ") then
@@ -915,7 +919,7 @@ if game.PlaceId == 16146832113 then
                     else
                         pcall(
                             function()
-                            if not Game.Cannot_Challenge and Configs["Auto Join Challenge"].Value and not Challenge_Ignore() then wait(Configs["Start Delay"].Value)
+                            if not Game.Cannot_Challenge and Configs["Auto Join Challenge"].Value and Challenge_Check_Rewards() and not Challenge_Ignore() then wait(Configs["Start Delay"].Value)
                             if (game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Enabled and game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Visible) or game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("MiniLobbyInterface") then Create_Room() end
                                 game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer("Enter", Challenge_Normal_Lobby())
                             elseif Story_Lobby() and (Configs["Auto Join Legend Stage"].Value or Configs["Auto Join Normal"].Value or Configs["Auto Join Hights"].Value) then wait(Configs["Start Delay"].Value)
