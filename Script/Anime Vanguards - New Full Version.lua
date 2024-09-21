@@ -55,7 +55,7 @@ local Game =
     Legend_Stage_Acts = {},
 
     Challenge_Debuff = {"Revitalize", "Shielded", "Exploding", "Strong", "Thrice", "Regen", "Fast"},
-    Challenge_Rewards = {},
+    Challenge_Rewards = {"TraitRerolls"},
 
     Webhook = {},
     Buttons = {},
@@ -311,9 +311,9 @@ Tabs_Secs[1][4]:AddDropdown(
 )
 
 Tabs_Secs[1][4]:AddDropdown(
-    "Ignore Challenge Rewards",
+    "Target Challenge Rewards",
     {
-        Title = "Ignore Challenge  Rewards",
+        Title = "Target Challenge Rewards",
         Values = Game.Challenge_Rewards,
         Multi = true,
         Default = {}
@@ -325,15 +325,6 @@ Tabs_Secs[1][4]:AddToggle(
     {
         Title = "Auto Join Challenges",
         Description = "Join select challenges automatically",
-        Default = false
-    }
-)
-
-Tabs_Secs[1][4]:AddToggle(
-    "Not Ignore if Reroll",
-    {
-        Title = "Not Ignore if Reroll",
-        Description = "Allow you to join the challenge even ignore challenge rewards, Enable with Auto Join Challenges",
         Default = false
     }
 )
@@ -750,13 +741,11 @@ if game.PlaceId == 16146832113 then
     end
 
     local function Challenge_Ignore()
-        if #Configs["Ignore Challenge Rewards"].Tables > 0 then
-            if Configs["Not Ignore if Reroll"] and Challenge_Normal_Lobby().LobbyBanner.Banner.Main.ChallengeInterface.Background.Rewards:FindFirstChild("TraitRerolls") then
-            else
-                for I = 1, #Configs["Ignore Challenge Rewards"].Tables do
-                    if Challenge_Normal_Lobby().LobbyBanner.Banner.Main.ChallengeInterface.Background.Rewards:FindFirstChild(Configs["Ignore Challenge Rewards"].Tables[I]) then
-                        return true
-                    end
+        if #Configs["Target Challenge Rewards"].Tables > 0 then
+            for i,v in next, Challenge_Normal_Lobby().LobbyBanner.Banner.Main.ChallengeInterface.Background.Rewards:GetChildren() do
+                if table.find(Configs["Target Challenge Rewards"].Tables, v.Name) then
+                else
+                    return true
                 end
             end
         end
@@ -816,6 +805,63 @@ if game.PlaceId == 16146832113 then
         return Grabs
     end
 
+    local function Create_Room()
+        if Configs["Auto Join Legend Stage"].Value and (game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Enabled and game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Visible) then
+            game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer("Confirm",
+        {
+            "LegendStage",
+            Name_to_Stage(Configs["Legend Stage Stage"].Value),
+            Configs["Legend Stage Act"].Value,
+            "Normal",
+            4,
+            0,
+            Configs["Friends Only"].Value
+        })
+        elseif Configs["Auto Join Normal"].Value and (game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Enabled and game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Visible) then
+                game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("LobbyEvent"):FireServer("Confirm",{
+                    "Story",
+                    Name_to_Stage(Configs["Story Stage"].Value),
+                    Configs["Story Act"].Value,
+                    Configs["Story Difficulty"].Value,
+                    4,
+                    0,
+                    Configs["Friends Only"].Value
+                })
+        elseif Configs["Auto Join Hights"].Value and (game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Enabled and game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Visible) then
+            for I = 1, #Game.Story_Mode do
+                if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("MiniLobbyInterface") then
+                    break
+                else
+                    local Stags_Options = game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Background.Main.Stages
+
+                    if Stags_Options["Stage"..tostring(#Game.Story_Mode)].Info.LevelsCleared.Amount.Text == "6/6" then
+                        game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("LobbyEvent"):FireServer("Confirm",{
+                            "Story",
+                            "Stage"..tostring(#Game.Story_Mode),
+                            "Act6",
+                            Configs["Story Difficulty"].Value,
+                            4,
+                            0,
+                            Configs["Friends Only"].Value
+                        })
+                    else
+                        if Stags_Options["Stage"..tostring(I)].Info.LevelsCleared.Amount.Text ~= "6/6" then
+                            game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("LobbyEvent"):FireServer("Confirm",{
+                                "Story",
+                                "Stage"..tostring(I),
+                                "Act"..tostring(tonumber(Stags_Options["Stage"..tostring(I)].Info.LevelsCleared.Amount.Text:split("/")[1] + 1)),
+                                Configs["Story Difficulty"].Value,
+                                4,
+                                0,
+                                Configs["Friends Only"].Value
+                            })
+                        end
+                    end
+                end
+            end
+        end
+    end
+
     task.spawn(
         function()
             for I = 1, 6 do
@@ -865,70 +911,15 @@ if game.PlaceId == 16146832113 then
                 if Loader.Unloaded then break
                 elseif Configs["Auto Join Challenge"].Value or Configs["Auto Join Legend Stage"].Value or Configs["Auto Join Normal"].Value or Configs["Auto Join Hights"].Value then
                     if (game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Enabled and game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Visible) or game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("MiniLobbyInterface") then
-                    if Configs["Auto Join Legend Stage"].Value and (game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Enabled and game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Visible) then
-                        game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer("Confirm",
-                    {
-                        "LegendStage",
-                        Name_to_Stage(Configs["Legend Stage Stage"].Value),
-                        Configs["Legend Stage Act"].Value,
-                        "Normal",
-                        4,
-                        0,
-                        Configs["Friends Only"].Value
-                    })
-                    else
-                        if (game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Enabled and game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Visible) and Configs["Auto Join Normal"].Value then
-                            game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("LobbyEvent"):FireServer("Confirm",{
-                                "Story",
-                                Name_to_Stage(Configs["Story Stage"].Value),
-                                Configs["Story Act"].Value,
-                                Configs["Story Difficulty"].Value,
-                                4,
-                                0,
-                                Configs["Friends Only"].Value
-                            })
-                        elseif (game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Enabled and game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Visible) and Configs["Auto Join Hights"].Value then
-                            for I = 1, #Game.Story_Mode do
-                                if game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("MiniLobbyInterface") then
-                                    break
-                                else
-                                    local Stags_Options = game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Background.Main.Stages
-
-                                    if Stags_Options["Stage"..tostring(#Game.Story_Mode)].Info.LevelsCleared.Amount.Text == "6/6" then
-                                        game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("LobbyEvent"):FireServer("Confirm",{
-                                            "Story",
-                                            "Stage"..tostring(#Game.Story_Mode),
-                                            "Act6",
-                                            Configs["Story Difficulty"].Value,
-                                            4,
-                                            0,
-                                            Configs["Friends Only"].Value
-                                        })
-                                    else
-                                        if Stags_Options["Stage"..tostring(I)].Info.LevelsCleared.Amount.Text ~= "6/6" then
-                                            game:GetService("ReplicatedStorage"):WaitForChild("Networking"):WaitForChild("LobbyEvent"):FireServer("Confirm",{
-                                                "Story",
-                                                "Stage"..tostring(I),
-                                                "Act"..tostring(tonumber(Stags_Options["Stage"..tostring(I)].Info.LevelsCleared.Amount.Text:split("/")[1] + 1)),
-                                                Configs["Story Difficulty"].Value,
-                                                4,
-                                                0,
-                                                Configs["Friends Only"].Value
-                                            })
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
+                        Create_Room()
                     else
                         pcall(
                             function()
                             if not Game.Cannot_Challenge and Configs["Auto Join Challenge"].Value and not Challenge_Ignore() then wait(Configs["Start Delay"].Value)
-                            if (game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Enabled and game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Visible) or game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("MiniLobbyInterface") then return end
+                            if (game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Enabled and game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Visible) or game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("MiniLobbyInterface") then Create_Room() end
                                 game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer("Enter", Challenge_Normal_Lobby())
                             elseif Story_Lobby() and (Configs["Auto Join Legend Stage"].Value or Configs["Auto Join Normal"].Value or Configs["Auto Join Hights"].Value) then wait(Configs["Start Delay"].Value)
-                            if (game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Enabled and game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Visible) or game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("MiniLobbyInterface") then return end
+                            if (game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Enabled and game:GetService("Players").LocalPlayer.PlayerGui.Windows.Lobby.Holder.Visible) or game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("MiniLobbyInterface") then Create_Room() end
                                 game:GetService("ReplicatedStorage").Networking.LobbyEvent:FireServer("Enter", Story_Lobby())
                             end
                         end
