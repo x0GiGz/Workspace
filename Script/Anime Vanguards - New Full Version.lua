@@ -1169,9 +1169,8 @@ else
     end
 
     local function Check_Macro_Time_Money(x)
-        repeat task.wait() until (tonumber(Yen()) >= tonumber(x["money"]) and tonumber(Game_Time()) >= tonumber(x["time"])) or not Configs["Macro Play"].Value or Loader.Unloaded
-
         task.wait(Configs["Macro Delay"].Value)
+        repeat task.wait() until (tonumber(Yen()) >= tonumber(x["money"]) and tonumber(Game_Time()) >= tonumber(x["time"])) or not Configs["Macro Play"].Value or Loader.Unloaded
     end
 
     local function UpgradeInterfacesX()
@@ -1417,6 +1416,7 @@ else
                                             end
                                         end
                                     end
+                                    task.wait(0.25)
                                     if not Configs["Macro Play"].Value or Loader.Unloaded then
                                         break
                                     end
