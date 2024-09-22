@@ -1405,7 +1405,7 @@ else
                                                 break
                                             elseif not Unit_Position(Data["cframe"]) or (Unit_Position(Data["cframe"]) and Units_Active(Unit_Position(Data["cframe"])).name ~= Data["unit"]) then
                                                 Loader:Notify({Title = "Error", SubContent = "Invaild Unit to ChangePriority", Disable = true, Duration = 2.5})
-                                            elseif Data["value"] and Units_Active(Unit_Position(Data["cframe"])).priority == Unit_Priority(Data["value"]) then
+                                            elseif Data["value"] and tonumber(Units_Active(Unit_Position(Data["cframe"])).priority) == tonumber(Unit_Priority(tostring(Data["value"]))) then
                                                 Loader:Notify({Title = "Error", SubContent = "This Unit has Changed Priority", Disable = true, Duration = 2.5})
                                             else
                                                 Check_Macro_Time_Money(Data)
@@ -1416,7 +1416,6 @@ else
                                                 end
                                             end
                                         end
-                                        task.wait(0.475)
                                     end
                                     if not Configs["Macro Play"].Value or Loader.Unloaded then
                                         break
