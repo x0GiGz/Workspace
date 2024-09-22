@@ -1419,14 +1419,14 @@ else
                                                             else
                                                                 game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("ChangePriority", Unit_Position(Data["cframe"]))
                                                             end
-                                                        task.wait(0.025)
+                                                        task.wait()
                                                         until not Configs["Macro Play"].Value or Loader.Unloaded or not Unit_Position(Data["cframe"]) or not Data["value"] or (Data["value"] and tonumber(Units_Active(Unit_Position(Data["cframe"])).priority) == tonumber(Unit_Priority(Data["value"]))) 
                                                     end
                                                 end
                                             end
                                         end
                                     end
-                                    task.wait(0.25)
+                                    task.wait(0.35)
                                     if not Configs["Macro Play"].Value or Loader.Unloaded then
                                         break
                                     end
