@@ -1404,21 +1404,24 @@ else
                                                 break
                                             elseif not Unit_Position(Data["cframe"]) or (Unit_Position(Data["cframe"]) and Units_Active(Unit_Position(Data["cframe"])).name ~= Data["unit"]) then
                                                 Loader:Notify({Title = "Error", SubContent = "Invaild Unit to ChangePriority", Disable = true, Duration = 2.5})
-                                            elseif Data["value"] and tonumber(Units_Active(Unit_Position(Data["cframe"])).priority) == tonumber(Unit_Priority(tostring(Data["value"]))) then
+                                            elseif Data["value"] and tonumber(Units_Active(Unit_Position(Data["cframe"])).priority) == tonumber(Unit_Priority(Data["value"])) then
                                                 Loader:Notify({Title = "Error", SubContent = "This Unit has Changed Priority", Disable = true, Duration = 2.5})
                                             else
                                                 Check_Macro_Time_Money(Data)
                                                 if not Configs["Macro Play"].Value or Loader.Unloaded then
                                                     break
                                                 else
-                                                    repeat
-                                                        if not Unit_Position(Data["cframe"]) then
-                                                            break
-                                                        else
-                                                            game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("ChangePriority", Unit_Position(Data["cframe"]))
-                                                        end
-                                                    task.wait(0.035)
-                                                    until not Configs["Macro Play"].Value or Loader.Unloaded or not Unit_Position(Data["cframe"]) or not Data["value"] or (Data["value"] and tonumber(Units_Active(Unit_Position(Data["cframe"])).priority) == tonumber(Unit_Priority(tostring(Data["value"]))))
+                                                    game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("ChangePriority", Unit_Position(Data["cframe"]))
+                                                    if Data["value"] and tonumber(Units_Active(Unit_Position(Data["cframe"])).priority) ~= tonumber(Unit_Priority(Data["value"])) then
+                                                        repeat
+                                                            if not Unit_Position(Data["cframe"]) then
+                                                                break
+                                                            else
+                                                                game:GetService("ReplicatedStorage").Networking.UnitEvent:FireServer("ChangePriority", Unit_Position(Data["cframe"]))
+                                                            end
+                                                        task.wait(0.025)
+                                                        until not Configs["Macro Play"].Value or Loader.Unloaded or not Unit_Position(Data["cframe"]) or not Data["value"] or (Data["value"] and tonumber(Units_Active(Unit_Position(Data["cframe"])).priority) == tonumber(Unit_Priority(Data["value"]))) 
+                                                    end
                                                 end
                                             end
                                         end
