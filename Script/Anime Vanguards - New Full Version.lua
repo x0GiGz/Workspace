@@ -1565,10 +1565,6 @@ else
         end
     )
 
-    List.ChildRemoved:Connect(function(v)
-        print(X[v.Name].name.." : Removed")
-    end)
-
     task.spawn(
         function()
             Configs["Macro Play"]:OnChanged(
