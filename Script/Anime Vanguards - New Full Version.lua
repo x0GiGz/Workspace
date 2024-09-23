@@ -1399,7 +1399,7 @@ else
                         local Units = {}
                         for I, V in next, List:GetChildren() do
                             if not Units[V.Name] then
-                                Units[V.Name] = {Data = Units_Active(V.Name), Position = tostring(Unit_CFrame(V.Name))}
+                                Units[V.Name] = {Data = Units_Active(V.Name), Position = Unit_CFrame(V.Name)}
                             end
                             if V:IsA("Frame") and not Game.Units_Manager[V.Name.."Upgrade"] then
                                 Game.Units_Manager[V.Name.."Upgrade"] = V.UpgradeLabel:GetPropertyChangedSignal("Text"):Connect(
@@ -1434,7 +1434,7 @@ else
                                         local last_macro = Macro.Value[tostring(Macro_Len())]
                                         Macro_Data_Write()
 
-                                        if last_macro["type"] == "Sell" and last_macro["unit"] == Units[x.Name].Data.name and last_macro["cframe"] == Units[x.Name].Position then
+                                        if last_macro["type"] == "Sell" and last_macro["unit"] == Units[x.Name].Data.name and last_macro["cframe"] == tostring(Units[x.Name].Position) then
                                         else
                                             Macro_Insert(
                                                 {
@@ -1442,7 +1442,7 @@ else
                                                     ["unit"] = Units[x.Name].Data.name,
                                                     ["money"] = "0",
                                                     ["time"] = tostring(Time_Write()),
-                                                    ["cframe"] = Units[x.Name].Position
+                                                    ["cframe"] = tostring(Units[x.Name].Position)
                                                 }
                                             )
                                         end
@@ -1519,7 +1519,7 @@ else
                                 local last_macro = Macro.Value[tostring(Macro_Len())]
                                 Macro_Data_Write()
 
-                                if last_macro["type"] == "Sell" and last_macro["unit"] == Units[x.Name].Data.name and last_macro["cframe"] == Units[x.Name].Position then
+                                if last_macro["type"] == "Sell" and last_macro["unit"] == Units[x.Name].Data.name and last_macro["cframe"] == tostring(Units[x.Name].Position) then
                                 else
                                     Macro_Insert(
                                         {
@@ -1527,7 +1527,7 @@ else
                                             ["unit"] = Units[x.Name].Data.name,
                                             ["money"] = "0",
                                             ["time"] = tostring(Time_Write()),
-                                            ["cframe"] = Units[x.Name].Position
+                                            ["cframe"] = tostring(Units[x.Name].Position)
                                         }
                                     )
                                 end
