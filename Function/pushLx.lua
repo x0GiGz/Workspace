@@ -346,7 +346,7 @@ do
 			t.Locked = true
 			t.LockButton.Visible = true
 			t.LockLabel.Visible = true
-			game:GetService("TweenService"):Create(LockLabel,
+			game:GetService("TweenService"):Create(t.LockLabel,
 				TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
 				{BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}
 			):Play()
@@ -355,7 +355,7 @@ do
 		function t.Unlock()
 			t.Locked = false
 			t.LockButton.Visible = false
-			game:GetService("TweenService"):Create(LockLabel,
+			game:GetService("TweenService"):Create(t.LockLabel,
 				TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
 				{BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}
 			):Play()
@@ -3742,7 +3742,7 @@ do
 					Locked = true
 					d.LockButton.Visible = true
 					d.LockLabel.Visible = true
-					game:GetService("TweenService"):Create(LockLabel,
+					game:GetService("TweenService"):Create(d.LockLabel,
 						TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
 						{BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}
 					):Play()
@@ -3751,7 +3751,7 @@ do
 				function s:Unlock()
 					Locked = false
 					d.LockButton.Visible = false
-					game:GetService("TweenService"):Create(LockLabel,
+					game:GetService("TweenService"):Create(d.LockLabel,
 						TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
 						{BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}
 					):Play()
@@ -5257,7 +5257,7 @@ do
 					Locked = true
 					d.LockButton.Visible = true
 					d.LockLabel.Visible = true
-					game:GetService("TweenService"):Create(LockLabel,
+					game:GetService("TweenService"):Create(d.LockLabel,
 						TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
 						{BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}
 					):Play()
@@ -5266,7 +5266,7 @@ do
 				function s:Unlock()
 					Locked = false
 					d.LockButton.Visible = false
-					game:GetService("TweenService"):Create(LockLabel,
+					game:GetService("TweenService"):Create(d.LockLabel,
 						TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
 						{BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}
 					):Play()
