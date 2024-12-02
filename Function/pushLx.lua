@@ -346,13 +346,19 @@ do
 			t.Locked = true
 			t.LockButton.Visible = true
 			t.LockLabel.Visible = true
-			Utility.Tween(t.LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.5)
+			game:GetService("TweenService"):Create(LockLabel,
+				TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
+				{BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}
+			):Play()
 		end
 
 		function t.Unlock()
 			t.Locked = false
 			t.LockButton.Visible = false
-			Utility.Tween(t.LockLabel, {BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}, 0.5)
+			game:GetService("TweenService"):Create(LockLabel,
+				TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
+				{BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}
+			):Play()
 		end
 
 		t.TitleContent = Title
@@ -852,6 +858,8 @@ do
 					if not Library.Parser[option.Type] then continue end
 					if Library.Ignore[idx] then continue end
 					if Options.Ignore[idx] then continue end
+					if table.find(Library.Ignore, idx) then continue end
+					if table.find(Options.Ignore, idx) then continue end
 
 					table.insert(data.objects, Library.Parser[option.Type].Save(idx, option))
 				end
@@ -2582,13 +2590,19 @@ do
 					Locked = true
 					LockButton.Visible = true
 					LockLabel.Visible = true
-					Utility.Tween(LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.5)
+					game:GetService("TweenService"):Create(LockLabel,
+						TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
+						{BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}
+					):Play()
 				end
 
 				function s:Unlock()
 					Locked = false
 					LockButton.Visible = false
-					Utility.Tween(LockLabel, {BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}, 0.5)
+					game:GetService("TweenService"):Create(LockLabel,
+						TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
+						{BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}
+					):Play()
 				end
 
 				return s
@@ -2743,13 +2757,19 @@ do
 					Locked = true
 					LockButton.Visible = true
 					LockLabel.Visible = true
-					Utility.Tween(LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.5)
+					game:GetService("TweenService"):Create(LockLabel,
+						TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
+						{BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}
+					):Play()
 				end
 
 				function s:Unlock()
 					Locked = false
 					LockButton.Visible = false
-					Utility.Tween(LockLabel, {BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}, 0.5)
+					game:GetService("TweenService"):Create(LockLabel,
+						TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
+						{BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}
+					):Play()
 				end
 
 				return s
@@ -3722,13 +3742,19 @@ do
 					Locked = true
 					d.LockButton.Visible = true
 					d.LockLabel.Visible = true
-					Utility.Tween(d.LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.5)
+					game:GetService("TweenService"):Create(LockLabel,
+						TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
+						{BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}
+					):Play()
 				end
 
 				function s:Unlock()
 					Locked = false
 					d.LockButton.Visible = false
-					Utility.Tween(d.LockLabel, {BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}, 0.5)
+					game:GetService("TweenService"):Create(LockLabel,
+						TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
+						{BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}
+					):Play()
 				end
 
 				local function ToggleVisible(name, value)
@@ -5231,13 +5257,19 @@ do
 					Locked = true
 					d.LockButton.Visible = true
 					d.LockLabel.Visible = true
-					Utility.Tween(d.LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.5)
+					game:GetService("TweenService"):Create(LockLabel,
+						TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
+						{BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}
+					):Play()
 				end
 
 				function s:Unlock()
 					Locked = false
 					d.LockButton.Visible = false
-					Utility.Tween(d.LockLabel, {BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}, 0.5)
+					game:GetService("TweenService"):Create(LockLabel,
+						TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.1),
+						{BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}
+					):Play()
 				end
 
 				Library.AddSignal(Return.MouseButton1Click, s.Close)
