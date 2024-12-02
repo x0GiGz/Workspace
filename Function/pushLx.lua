@@ -492,7 +492,7 @@ do
 			{
 				ZIndex = 3,
 				TextXAlignment = Enum.TextXAlignment.Left,
-				TextSize = 13,
+				TextSize = 14,
 				FontFace = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal),
 				RichText = true,
 				TextColor3 = Color3.fromRGB(82, 255, 255),
@@ -507,13 +507,13 @@ do
 				ZIndex = 3,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextTransparency = 0.5,
-				TextSize = 12,
+				TextSize = 13,
 				FontFace = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal),
 				TextColor3 = Color3.fromRGB(82, 255, 255),
 				BackgroundTransparency = 1,
 				RichText = true,
 				TextWrapped = true,
-				Size = UDim2.new(1, 0, 0, 30),
+				Size = UDim2.new(1, 0, 0, 14),
 				Text = Options.Content or "",
 				Visible = Options.Content or false,
 				AutomaticSize = Enum.AutomaticSize.Y
@@ -531,7 +531,7 @@ do
 				BackgroundTransparency = 1,
 				RichText = true,
 				TextWrapped = true,
-				Size = UDim2.new(1, 0, 0, 30),
+				Size = UDim2.new(1, 0, 0, 15),
 				Text = Options.SubTitle or "SubTitle",
 				AutomaticSize = Enum.AutomaticSize.Y
 			}
@@ -739,7 +739,7 @@ do
 						),
 						e("UIListLayout",
 							{
-								Padding = UDim.new(0, 0),
+								Padding = UDim.new(0, 4),
 								SortOrder = Enum.SortOrder.LayoutOrder
 							}
 						)
