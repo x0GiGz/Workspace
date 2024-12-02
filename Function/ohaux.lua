@@ -48,6 +48,7 @@ local function searchClosure(script, name, upvalueIndex, constants)
     end
 end
 
+
 aux.placeholderUserdataConstant = placeholderUserdataConstant
 aux.searchClosure = searchClosure
 
