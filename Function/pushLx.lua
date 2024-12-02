@@ -1352,28 +1352,7 @@ do
 		)
 
 		function t.Minimize()
-			if Library.Toggleing then
-				return
-			end
-			Library.Toggleing = true
-			if Library.Window.Root.Visible then
-				Library.Position = Library.Window.Root.Position
-				Utility.Tween(Library.Window.Root, {AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, 1), Size = UDim2.new(0.01, 0, 0.01, 0)}, 0.5, true)
-				Library.Window.Root.Visible = false
-			else
-				Library.Window.Root.Visible = true
-				local x, y = m.ViewportSize.X / 1.75, m.ViewportSize.Y / 1.5
-
-				if x > 900 then
-					x = 900
-				end
-				if y > 650 then
-					y = 650
-				end
-				Library.Window.Root.AnchorPoint = Vector2.new(0, 0)
-				Utility.Tween(Library.Window.Root, {Position = Library.Position, Size = UDim2.new(0, x, 0, y)}, 0.5, true)
-			end
-			Library.Toggleing = false
+			Library.Window.Root.Visible = not Library.Window.Root.Visible
 		end
 
 		Library.AddSignal(Keybind.MouseButton1Click, function()
