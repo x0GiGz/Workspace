@@ -346,14 +346,13 @@ do
 			t.Locked = true
 			t.LockButton.Visible = true
 			t.LockLabel.Visible = true
-			Utility.Tween(t.LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.35, true)
+			Utility.Tween(t.LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.5)
 		end
 
 		function t.Unlock()
 			t.Locked = false
 			t.LockButton.Visible = false
-			Utility.Tween(t.LockLabel, {BackgroundTransparency = 1, Size = UDim2.fromScale(0, 0)}, 0.35, true)
-			t.LockLabel.Visible = false
+			Utility.Tween(t.LockLabel, {BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}, 0.5)
 		end
 
 		t.TitleContent = Title
@@ -2583,14 +2582,13 @@ do
 					Locked = true
 					LockButton.Visible = true
 					LockLabel.Visible = true
-					Utility.Tween(LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.35, true)
+					Utility.Tween(LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.5)
 				end
 
 				function s:Unlock()
 					Locked = false
 					LockButton.Visible = false
-					Utility.Tween(LockLabel, {BackgroundTransparency = 1, Size = UDim2.fromScale(0, 0)}, 0.35, true)
-					LockLabel.Visible = false
+					Utility.Tween(LockLabel, {BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}, 0.5)
 				end
 
 				return s
@@ -2745,14 +2743,13 @@ do
 					Locked = true
 					LockButton.Visible = true
 					LockLabel.Visible = true
-					Utility.Tween(LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.35, true)
+					Utility.Tween(LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.5)
 				end
 
 				function s:Unlock()
 					Locked = false
 					LockButton.Visible = false
-					Utility.Tween(LockLabel, {BackgroundTransparency = 1, Size = UDim2.fromScale(0, 0)}, 0.35, true)
-					LockLabel.Visible = false
+					Utility.Tween(LockLabel, {BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}, 0.5)
 				end
 
 				return s
@@ -3725,14 +3722,13 @@ do
 					Locked = true
 					d.LockButton.Visible = true
 					d.LockLabel.Visible = true
-					Utility.Tween(d.LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.35, true)
+					Utility.Tween(d.LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.5)
 				end
 
 				function s:Unlock()
 					Locked = false
 					d.LockButton.Visible = false
-					Utility.Tween(d.LockLabel, {BackgroundTransparency = 1, Size = UDim2.fromScale(0, 0)}, 0.35, true)
-					d.LockLabel.Visible = false
+					Utility.Tween(d.LockLabel, {BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}, 0.5)
 				end
 
 				local function ToggleVisible(name, value)
@@ -5235,14 +5231,13 @@ do
 					Locked = true
 					d.LockButton.Visible = true
 					d.LockLabel.Visible = true
-					Utility.Tween(d.LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.35, true)
+					Utility.Tween(d.LockLabel, {BackgroundTransparency = 0.75, Size = UDim2.fromScale(1, 1)}, 0.5)
 				end
 
 				function s:Unlock()
 					Locked = false
 					d.LockButton.Visible = false
-					Utility.Tween(d.LockLabel, {BackgroundTransparency = 1, Size = UDim2.fromScale(0, 0)}, 0.35, true)
-					d.LockLabel.Visible = false
+					Utility.Tween(d.LockLabel, {BackgroundTransparency = 1, Visible = false, Size = UDim2.fromScale(0, 0)}, 0.5)
 				end
 
 				Library.AddSignal(Return.MouseButton1Click, s.Close)
