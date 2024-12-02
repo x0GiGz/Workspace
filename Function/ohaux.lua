@@ -1,5 +1,5 @@
 local aux = {}
-
+ 
 local getGc = getgc
 local getInfo = debug.getinfo or getinfo
 local getUpvalue = debug.getupvalue or getupvalue or getupval
