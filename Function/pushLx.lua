@@ -907,7 +907,7 @@ do
 			)
 
 			if Library.ToggleGUI then
-				Library.ToggleGUI.Size = UDim2.fromOffset((x / 10) - 2, (x / 10) - 5)
+				Library.ToggleGUI.Size = UDim2.fromOffset((x / 20) - 2, (x / 20) - 5)
 			end
 		end)
 
